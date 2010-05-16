@@ -62,7 +62,6 @@ public class WebControl {
 		try {
 			URL url = new URL(urlstr);
 			HttpURLConnection con = (HttpURLConnection) url.openConnection();
-			con.setFollowRedirects(false);
 			con.setInstanceFollowRedirects(false);
 			con.connect();
 			BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream(), charset));
