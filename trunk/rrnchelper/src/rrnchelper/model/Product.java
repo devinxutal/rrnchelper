@@ -1,6 +1,8 @@
 package rrnchelper.model;
 
-public class Product {
+import java.io.Serializable;
+
+public class Product implements Serializable {
 	private String reapAction;
 	private String type;
 	public static final String Å©Ìï = "Å©Ìï";

@@ -1,6 +1,8 @@
 package rrnchelper.model;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable {
 	private String username;
 	private String password;
 	private Farm myFarm;

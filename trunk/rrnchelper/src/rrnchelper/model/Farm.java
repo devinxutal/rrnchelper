@@ -1,6 +1,8 @@
 package rrnchelper.model;
 
-public class Farm {
+import java.io.Serializable;
+
+public class Farm implements Serializable {
 	private String farmAddress;
 	private Product[] products;
 

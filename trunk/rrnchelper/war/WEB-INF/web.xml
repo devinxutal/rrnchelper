@@ -6,8 +6,8 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
 http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 
   <servlet>
-    <servlet-name>StartSevlet</servlet-name>
-    <servlet-class>rrnchelper.servlet.StartSevlet</servlet-class>
+    <servlet-name>StartServlet</servlet-name>
+    <servlet-class>rrnchelper.servlet.StartServlet</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>StopServlet</servlet-name>
@@ -21,7 +21,7 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 
 
   <servlet-mapping>
-    <servlet-name>StartSevlet</servlet-name>
+    <servlet-name>StartServlet</servlet-name>
     <url-pattern>/start.do</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
