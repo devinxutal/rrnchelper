@@ -3,6 +3,7 @@ package rrnchelper.servlet;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -72,11 +73,15 @@ public class StartSevlet extends HttpServlet {
 
     private void process(HttpServletRequest request, HttpServletResponse response)
 	    throws ServletException, IOException {
-	User I = new User();
-	I.setWebControl(new WebControl("http://mapps.renren.com"));
-	I.setMyFarm(new Farm());
-	I.gotoMyFarm();
-	I.checkEveryType();
+    	ServletContext application = request.getSession().getServletContext();
+    	User I = (User)application.getAttribute("I");
+    	if (I == null) {
+    		I = new User();
+    		I.setWebControl(new WebControl("http://mapps.renren.com"));
+    		I.setMyFarm(new Farm());
+    		application.setAttribute("I", I);
+    	}
+		I.setAutoWork(true);
     }
 
     /**

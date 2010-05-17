@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <cronentries>
 	<cron>
-		<url>/start.do</url>
-		<description>Repopulate the cache every 2 minutes</description>
+		<url>/autowork.do</url>
+		<description>Repopulate the cache every 1 minutes</description>
 		<schedule>every 1 minutes</schedule>
 		<timezone>Asia/Shanghai</timezone>
 	</cron>

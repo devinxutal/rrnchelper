@@ -14,7 +14,10 @@
 
   <body>
     <form action="/start.do">
-      <button type="submit">开始收菜</button>
+      <button type="submit" ${I.autoWork? "disabled='disabled'":""}>开始收菜</button>
+    </form>
+    <form action="/stop.do">
+      <button type="submit" ${I.autoWork? "":"disabled='disabled'"}>停止收菜</button>
     </form>
   </body>
 </html>

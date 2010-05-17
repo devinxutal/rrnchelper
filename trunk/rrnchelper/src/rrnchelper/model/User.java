@@ -5,6 +5,7 @@ public class User {
 	private String password;
 	private Farm myFarm;
 	private WebControl webControl;
+	private volatile boolean autoWork = false;
 
 	public void gotoMyFarm() {
 		webControl.doGet(myFarm.getFarmAddress());
@@ -61,5 +62,13 @@ public class User {
 
 	public void setMyFarm(Farm myFarm) {
 		this.myFarm = myFarm;
+	}
+
+	public boolean isAutoWork() {
+		return autoWork;
+	}
+
+	public void setAutoWork(boolean autoWork) {
+		this.autoWork = autoWork;
 	}
 }
