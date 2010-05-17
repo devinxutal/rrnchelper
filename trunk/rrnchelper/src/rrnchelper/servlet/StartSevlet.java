@@ -1,7 +1,6 @@
 package rrnchelper.servlet;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -15,83 +14,26 @@ import rrnchelper.model.WebControl;
 
 public class StartSevlet extends HttpServlet {
 
-    /**
-     * Constructor of the object.
-     */
-    public StartSevlet() {
-	super();
-    }
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-    /**
-     * Destruction of the servlet. <br>
-     */
-    public void destroy() {
-	super.destroy(); // Just puts "destroy" string in log
-	// Put your code here
-    }
+		process(request, response);
+	}
 
-    /**
-     * The doGet method of the servlet. <br>
-     * 
-     * This method is called when a form has its tag value method equals to get.
-     * 
-     * @param request
-     *            the request send by the client to the server
-     * @param response
-     *            the response send by the server to the client
-     * @throws ServletException
-     *             if an error occurred
-     * @throws IOException
-     *             if an error occurred
-     */
-    public void doGet(HttpServletRequest request, HttpServletResponse response)
-	    throws ServletException, IOException {
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-	process(request, response);
-    }
+		process(request, response);
+	}
 
-    /**
-     * The doPost method of the servlet. <br>
-     * 
-     * This method is called when a form has its tag value method equals to
-     * post.
-     * 
-     * @param request
-     *            the request send by the client to the server
-     * @param response
-     *            the response send by the server to the client
-     * @throws ServletException
-     *             if an error occurred
-     * @throws IOException
-     *             if an error occurred
-     */
-    public void doPost(HttpServletRequest request, HttpServletResponse response)
-	    throws ServletException, IOException {
-
-	process(request, response);
-    }
-
-    private void process(HttpServletRequest request, HttpServletResponse response)
-	    throws ServletException, IOException {
-    	ServletContext application = request.getSession().getServletContext();
-    	User I = (User)application.getAttribute("I");
-    	if (I == null) {
-    		I = new User();
-    		I.setWebControl(new WebControl("http://mapps.renren.com"));
-    		I.setMyFarm(new Farm());
-    		application.setAttribute("I", I);
-    	}
+	private void process(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		ServletContext application = request.getSession().getServletContext();
+		User I = (User) application.getAttribute("I");
+		if (I == null) {
+			I = new User();
+			I.setWebControl(new WebControl("http://mapps.renren.com"));
+			I.setMyFarm(new Farm());
+			application.setAttribute("I", I);
+		}
 		I.setAutoWork(true);
-    }
-
-    /**
-     * Initialization of the servlet. <br>
-     * 
-     * @throws ServletException
-     *             if an error occurs
-     */
-    public void init() throws ServletException {
-	// Put your code here
-    }
-
+		response.sendRedirect("/");
+	}
 }

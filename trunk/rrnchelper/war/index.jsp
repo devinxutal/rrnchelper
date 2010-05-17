@@ -1,4 +1,5 @@
 <%@ page language="java" pageEncoding="GBK" contentType="text/html; charset=UTF-8"%>
+<%@ page isELIgnored="false" %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <!-- The HTML 4.01 Transitional DOCTYPE declaration-->
 <!-- above set at the top of the file will set     -->
@@ -14,10 +15,10 @@
 
   <body>
     <form action="/start.do">
-      <button type="submit" ${I.autoWork? "disabled='disabled'":""}>开始收菜</button>
+      <button type="submit" ${I.autoWork? "disabled":"" }>开始收菜</button>
     </form>
     <form action="/stop.do">
-      <button type="submit" ${I.autoWork? "":"disabled='disabled'"}>停止收菜</button>
+      <button type="submit" ${I.autoWork? "":"disabled" }>停止收菜</button>
     </form>
   </body>
 </html>
