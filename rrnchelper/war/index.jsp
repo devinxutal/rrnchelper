@@ -16,7 +16,7 @@
   </head>
 
   <%
-        User I = UserDao.findByFilter("username = 'comiclee'").get(0);
+        User I = UserDao.findByFilter("username = 'yourusername'").get(0);
         boolean autoWork = I.isAutoWork();
    %>
   <body>
