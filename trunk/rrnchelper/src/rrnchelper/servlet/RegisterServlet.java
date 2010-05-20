@@ -27,7 +27,7 @@ public class RegisterServlet extends HttpServlet {
     public void process(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
 	User I = new User();
-	I.setUsername("not necessary");
+	I.setUsername("yourusername");
 	I.setFarmAddress("Your farm url");
 	UserDao.saveOrUpdateUser(I);
     }
