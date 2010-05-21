@@ -25,7 +25,7 @@ public class StopServlet extends HttpServlet {
 
     private void process(HttpServletRequest request,
 	    HttpServletResponse response) throws ServletException, IOException {
-	User I = UserDao.findByFilter("username = 'comiclee'").get(0);
+	User I = UserDao.findAll().get(0);
 	I.setAutoWork(false);
 	UserDao.saveOrUpdateUser(I);
 	response.sendRedirect("/");

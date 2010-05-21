@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import rrnchelper.model.Farm;
 import rrnchelper.model.User;
 import rrnchelper.model.UserDao;
-import rrnchelper.model.WebControl;
+import rrnchelper.web.WebControl;
 
 public class StartSevlet extends HttpServlet {
 
@@ -26,7 +26,7 @@ public class StartSevlet extends HttpServlet {
 	}
 
 	private void process(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		User I = UserDao.findByFilter("username = 'comiclee'").get(0);
+		User I = UserDao.findAll().get(0);
 		I.setAutoWork(true);
 		UserDao.saveOrUpdateUser(I);
 		response.sendRedirect("/");

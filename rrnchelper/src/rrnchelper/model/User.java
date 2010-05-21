@@ -7,108 +7,110 @@ import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
-@PersistenceCapable(identityType = IdentityType.APPLICATION, detachable="true")
+import rrnchelper.web.WebControl;
+
+@PersistenceCapable(identityType = IdentityType.APPLICATION, detachable = "true")
 public class User {
-    @PrimaryKey
-    @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
-    private Long id;
-    @Persistent
-    private String username;
-    @Persistent
-    private String password;
-    @NotPersistent
-    private Farm myFarm;
-    @NotPersistent
-    private WebControl webControl;
-    @Persistent
-    public String farmAddress;
-    @Persistent
-    public boolean autoWork;
+	@PrimaryKey
+	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
+	private Long id;
+	@Persistent
+	private String username;
+	@Persistent
+	private String password;
+	@NotPersistent
+	private Farm myFarm;
+	@NotPersistent
+	private WebControl webControl;
+	@Persistent
+	public String farmAddress;
+	@Persistent
+	public boolean autoWork;
 
-    public User() {
-	webControl = new WebControl("http://mapps.renren.com");
-	autoWork = false;
-    }
-
-    public void gotoMyFarm() {
-        myFarm = new Farm(farmAddress);
-	webControl.doGet(myFarm.getFarmAddress());
-    }
-
-    public void checkEveryType() {
-	for (Product product : myFarm.getProducts()) {
-	    if (webControl.doGetByName("¡¾" + product.getType() + "¡¿¡ï")) {
-		reapAllProducts(product);
-	    }
-	    gotoMyFarm();
+	public User() {
+		webControl = new WebControl("http://mapps.renren.com");
+		autoWork = false;
 	}
-    }
 
-    public void reapAllProducts(Product product) {
-	webControl.doGetByName(product.getReapAction());
-    }
+	public void gotoMyFarm() {
+		myFarm = new Farm(farmAddress);
+		webControl.doGet(myFarm.getFarmAddress());
+	}
 
-    public void feed() {
+	public void checkEveryType() {
+		for (Product product : myFarm.getProducts()) {
+			if (webControl.goByLinkName("¡¾" + product.getType() + "¡¿¡ï")) {
+				reapAllProducts(product);
+			}
+			gotoMyFarm();
+		}
+	}
 
-    }
+	public void reapAllProducts(Product product) {
+		webControl.goByLinkName(product.getReapAction());
+	}
 
-    public void reapTheProduct() {
+	public void feed() {
 
-    }
+	}
 
-    public String getUsername() {
-	return username;
-    }
+	public void reapTheProduct() {
 
-    public void setUsername(String username) {
-	this.username = username;
-    }
+	}
 
-    public String getPassword() {
-	return password;
-    }
+	public String getUsername() {
+		return username;
+	}
 
-    public void setPassword(String password) {
-	this.password = password;
-    }
+	public void setUsername(String username) {
+		this.username = username;
+	}
 
-    public WebControl getWebControl() {
-	return webControl;
-    }
+	public String getPassword() {
+		return password;
+	}
 
-    public void setWebControl(WebControl webControl) {
-	this.webControl = webControl;
-    }
+	public void setPassword(String password) {
+		this.password = password;
+	}
 
-    public Farm getMyFarm() {
-	return myFarm;
-    }
+	public WebControl getWebControl() {
+		return webControl;
+	}
 
-    public void setMyFarm(Farm myFarm) {
-	this.myFarm = myFarm;
-    }
+	public void setWebControl(WebControl webControl) {
+		this.webControl = webControl;
+	}
 
-    public boolean isAutoWork() {
-	return autoWork;
-    }
+	public Farm getMyFarm() {
+		return myFarm;
+	}
 
-    public void setAutoWork(boolean autoWork) {
-	this.autoWork = autoWork;
-    }
+	public void setMyFarm(Farm myFarm) {
+		this.myFarm = myFarm;
+	}
 
-    public Long getId() {
-        return id;
-    }
+	public boolean isAutoWork() {
+		return autoWork;
+	}
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	public void setAutoWork(boolean autoWork) {
+		this.autoWork = autoWork;
+	}
 
-    public String getFarmAddress() {
-        return farmAddress;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public void setFarmAddress(String farmAddress) {
-        this.farmAddress = farmAddress;
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getFarmAddress() {
+		return farmAddress;
+	}
+
+	public void setFarmAddress(String farmAddress) {
+		this.farmAddress = farmAddress;
+	}
 }
