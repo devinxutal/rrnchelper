@@ -1,9 +1,11 @@
-package rrnchelper.model;
+package rrnchelper.web;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -25,11 +27,75 @@ public class WebControl {
 		this.domain = domain;
 	}
 
+	
+	public boolean go(Link link){
+		return go(link.getUrl());
+	}
+	
+	public boolean go(String url){
+		return doGet(url);
+	}
+	
+	public boolean goByLinkName(String linkName){
+		Link link = getLinkByName(linkName);
+		if(link != null){
+			return go(link);
+		}
+		return false;
+	}
+	
+	/**
+	 * @deprecated use go(String url) instead
+	 * @param url
+	 * @return
+	 */
 	public boolean doGet(String url) {
 		currentContent = getWebContent(url, charset);
 		return true;
 	}
 
+	public Link getLinkByName(String name){
+		Parser parser = Parser.createParser(currentContent, charset);
+		try {
+			NodeList linkNodeList = parser.parse(new NodeClassFilter(LinkTag.class));
+			LinkTag linkNode = null;
+			for (Node node : linkNodeList.toNodeArray()) {
+				if (((LinkTag) node).getLinkText().equals(name)) {
+					linkNode = (LinkTag) node;
+					return newLink(linkNode);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public List<Link> getLinksByPartialName(String partialname){
+		Parser parser = Parser.createParser(currentContent, charset);
+		List<Link> links = new LinkedList<Link>();
+		try {
+			NodeList linkNodeList = parser.parse(new NodeClassFilter(LinkTag.class));
+			LinkTag linkNode = null;
+			for (Node node : linkNodeList.toNodeArray()) {
+				linkNode = (LinkTag) node;
+				if (linkNode.getLinkText().contains(partialname)) {
+					
+					links.add(newLink(linkNode));
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return links;
+	}
+	
+	
+	/**
+	 * @deprecated
+	 * @param name
+	 * @return
+	 */
 	public boolean doGetByName(String name) {
 		System.out.println("click " + name);
 		Parser parser = Parser.createParser(currentContent, charset);
@@ -57,7 +123,7 @@ public class WebControl {
 		}
 	}
 
-	public String getWebContent(String urlstr, String charset) {
+	private String getWebContent(String urlstr, String charset) {
 		StringBuffer sb = new StringBuffer("");
 		try {
 			URL url = new URL(urlstr);
@@ -75,7 +141,7 @@ public class WebControl {
 		return sb.toString();
 	}
 
-	public String getMatchStr(String pattern, String source) {
+	private String getMatchStr(String pattern, String source) {
 		Pattern ptn = Pattern.compile(pattern);
 		Matcher m = ptn.matcher(source);
 		// System.out.println(source);
@@ -108,5 +174,17 @@ public class WebControl {
 
 	public void setCharset(String charset) {
 		this.charset = charset;
+	}
+	
+	
+	
+	///////////////////////////////////////
+	//private methods//////////////////////
+	///////////////////////////////////////
+	
+	private Link newLink(LinkTag link){
+		String name = link.getLinkText();
+		String url = link.getLink();
+		return new Link(this, name ,url);
 	}
 }
