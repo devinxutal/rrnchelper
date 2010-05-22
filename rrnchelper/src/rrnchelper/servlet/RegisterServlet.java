@@ -8,9 +8,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import rrnchelper.db.dao.UserDao;
 import rrnchelper.model.Farm;
 import rrnchelper.model.User;
-import rrnchelper.model.UserDao;
 
 public class RegisterServlet extends HttpServlet {
 

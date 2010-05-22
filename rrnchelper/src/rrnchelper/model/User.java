@@ -1,19 +1,26 @@
 package rrnchelper.model;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import javax.jdo.annotations.IdGeneratorStrategy;
+import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.NotPersistent;
 import javax.jdo.annotations.PersistenceCapable;
-import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
+import rrnchelper.util.LogType;
+import rrnchelper.util.LoggingUtility;
 import rrnchelper.web.WebControl;
+
+import com.google.appengine.api.datastore.Key;
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION, detachable = "true")
 public class User {
 	@PrimaryKey
 	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
-	private Long id;
+	private Key key;
 	@Persistent
 	private String username;
 	@Persistent
@@ -26,6 +33,8 @@ public class User {
 	public String farmAddress;
 	@Persistent
 	public boolean autoWork;
+	@Persistent(mappedBy = "user")
+	private List<Log> logs;
 
 	public User() {
 		webControl = new WebControl("http://mapps.renren.com");
@@ -34,13 +43,14 @@ public class User {
 
 	public void gotoMyFarm() {
 		myFarm = new Farm(farmAddress);
-		webControl.doGet(myFarm.getFarmAddress());
+		webControl.go(myFarm.getFarmAddress());
 	}
 
 	public void checkEveryType() {
 		for (Product product : myFarm.getProducts()) {
 			if (webControl.goByLinkName("【" + product.getType() + "】★")) {
 				reapAllProducts(product);
+				LoggingUtility.logging(this, LogType.Farm, "成功收获"+product.getType()+"中的作物");
 			}
 			gotoMyFarm();
 		}
@@ -98,12 +108,12 @@ public class User {
 		this.autoWork = autoWork;
 	}
 
-	public Long getId() {
-		return id;
+	public Key getId() {
+		return key;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public void setKey(Key key) {
+		this.key = key;
 	}
 
 	public String getFarmAddress() {
@@ -113,4 +123,16 @@ public class User {
 	public void setFarmAddress(String farmAddress) {
 		this.farmAddress = farmAddress;
 	}
+
+	public List<Log> getLogs() {
+		if (logs == null) {
+			logs = new LinkedList<Log>();
+		}
+		return logs;
+	}
+
+	public void setLogs(List<Log> logs) {
+		this.logs = logs;
+	}
+
 }
