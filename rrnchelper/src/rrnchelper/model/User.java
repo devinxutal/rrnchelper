@@ -53,15 +53,17 @@ public class User {
 					.getLinkByName("【" + product.getType() + "】★");
 			if (link != null && link.go()) {
 					reapAllProducts(product);
-					LoggingUtility.logging(this, LogType.Farm, "成功收获"
-							+ product.getType() + "中的作物");
 			}
 			gotoMyFarm();
 		}
 	}
 
 	public void reapAllProducts(Product product) {
-		webControl.goByLinkName(product.getReapAction());
+		Link link = webControl.getLinkByName(product.getReapAction());
+		if(link != null && link.go()){
+			LoggingUtility.logging(this, LogType.Farm, "成功收获"
+					+ product.getType() + "中的作物");
+		}
 	}
 
 	public void feed() {
