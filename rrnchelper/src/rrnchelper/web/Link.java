@@ -19,6 +19,7 @@ public class Link {
 	}
 	
 	public Link(WebControl control, String name, String url){
+		this.control = control;
 		this.name = name;
 		this.url = url;
 	}
