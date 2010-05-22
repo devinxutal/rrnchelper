@@ -29,7 +29,11 @@ public class WebControl {
 
 	
 	public boolean go(Link link){
-		return go(link.getUrl());
+		if(link != null){
+		return go(link.getFullUrl());
+		}else{
+			return false;
+		}
 	}
 	
 	public boolean go(String url){

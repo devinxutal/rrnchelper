@@ -12,6 +12,7 @@ import javax.jdo.annotations.PrimaryKey;
 
 import rrnchelper.util.LogType;
 import rrnchelper.util.LoggingUtility;
+import rrnchelper.web.Link;
 import rrnchelper.web.WebControl;
 
 import com.google.appengine.api.datastore.Key;
@@ -48,9 +49,12 @@ public class User {
 
 	public void checkEveryType() {
 		for (Product product : myFarm.getProducts()) {
-			if (webControl.goByLinkName("【" + product.getType() + "】★")) {
-				reapAllProducts(product);
-				LoggingUtility.logging(this, LogType.Farm, "成功收获"+product.getType()+"中的作物");
+			Link link = webControl
+					.getLinkByName("【" + product.getType() + "】★");
+			if (link != null && link.go()) {
+					reapAllProducts(product);
+					LoggingUtility.logging(this, LogType.Farm, "成功收获"
+							+ product.getType() + "中的作物");
 			}
 			gotoMyFarm();
 		}
