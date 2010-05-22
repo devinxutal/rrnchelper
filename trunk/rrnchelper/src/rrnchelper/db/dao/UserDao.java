@@ -1,4 +1,4 @@
-package rrnchelper.model;
+package rrnchelper.db.dao;
 
 import java.util.List;
 
@@ -6,6 +6,7 @@ import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
 import rrnchelper.db.PMF;
+import rrnchelper.model.User;
 
 public class UserDao {
 
@@ -57,7 +58,13 @@ public class UserDao {
 
 	public static List<User> findAll() {
 		PersistenceManager pm = PMF.get().getPersistenceManager();
-		Query query = pm.newQuery("select from " + User.class.getName());
-		return (List<User>) query.execute();
+		try {
+			Query query = pm.newQuery("select from " + User.class.getName());
+			List<User> users = (List<User>) query.execute();
+			users.size();
+			return users;
+		} finally {
+			pm.close();
+		}
 	}
 }
