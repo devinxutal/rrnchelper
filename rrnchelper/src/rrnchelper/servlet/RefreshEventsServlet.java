@@ -12,7 +12,7 @@ import rrnchelper.db.dao.UserDao;
 import rrnchelper.model.User;
 import rrnchelper.util.AutoWorkUtility;
 
-public class AutoWorkServlet extends HttpServlet {
+public class RefreshEventsServlet extends HttpServlet {
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		process(request, response);
@@ -25,12 +25,12 @@ public class AutoWorkServlet extends HttpServlet {
 
 	private void process(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-		List<User> users = UserDao.findByFilter("autoWork = true");
+		List<User> users = UserDao.findAll();
 		AutoWorkUtility utility = new AutoWorkUtility();
 		for (User user : users) {
 			utility.setUser(user);
 			utility.gotoFarm();
-			utility.checkEveryType();
+			utility.refreshEvents();
 			UserDao.saveOrUpdateUser(user);
 		}
 	}
