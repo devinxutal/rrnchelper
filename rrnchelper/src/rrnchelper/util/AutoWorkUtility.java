@@ -1,8 +1,10 @@
 package rrnchelper.util;
 
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+import rrnchelper.db.dao.UserDao;
 import rrnchelper.model.Crop;
 import rrnchelper.model.Event;
 import rrnchelper.model.Product;
@@ -65,6 +67,30 @@ public class AutoWorkUtility {
 
 	}
 
+	public void checkEvent() {
+		List<Event> eventsToBeProcessed = new LinkedList<Event>();
+		for (Event event : user.getEvents()) {
+			if (event.getTime().before(new Date())) {
+				eventsToBeProcessed.add(event);
+			}
+		}
+
+		for (Event event : eventsToBeProcessed) {
+			user.getEvents().remove(event);
+			if (event.getEventType().equals(
+					EventType.UpdateFriendEvent.toString())) {
+				processFriendUpdateEvent(event);
+			} else if (event.getEventType().equals(
+					EventType.StealEvent.toString())) {
+				processStealEvent(event);
+			}
+		}
+	}
+
+	public void stealFriend(Link friendLink) {
+
+	}
+
 	public void refreshEvents() {
 		refreshAllFriendEvents();
 	}
@@ -80,6 +106,7 @@ public class AutoWorkUtility {
 			// 处理每个好友
 			for (Link link : links) {
 				refreshFriendEvent(link);
+				UserDao.saveOrUpdateUser(user);
 			}
 		}
 	}
@@ -88,7 +115,8 @@ public class AutoWorkUtility {
 		Event event = new Event();
 		event.setDescription(friendlink.getName());
 		event.setUrl(friendlink.getFullUrl());
-		event.setEventType(EventType.Steal.toString());
+		event.setFriendUrl(friendlink.getFullUrl());
+		event.setEventType(EventType.StealEvent.toString());
 		List<Crop> crops = new LinkedList<Crop>();
 		for (Product product : user.getMyFarm().getProducts()) {
 			if (friendlink.go()) {
@@ -100,14 +128,59 @@ public class AutoWorkUtility {
 				}
 			}
 		}
+		Crop tempCrop = null;
 		for (Crop crop : crops) {
-			System.out.println("=======================");
-			System.out.println(crop.getName());
-			System.out.println(crop.getStatus());
-			System.out.println(crop.getRipeTime());
-			System.out.println(crop.isReapable());
-			System.out.println(crop.getReapUrl());
+			if (tempCrop == null) {
+				tempCrop = crop;
+			} else {
+				if (tempCrop.getRipeTime().after(crop.getRipeTime())) {
+					tempCrop = crop;
+				}
+			}
 		}
+		if (tempCrop != null) {
+			event.setTime(tempCrop.getRipeTime());
+			// 删除已经存在的事件
+			Event exist = null;
+			for (Event e : user.getEvents()) {
+				if (e.getEventType().equals(EventType.StealEvent.toString())
+						&& e.getFriendUrl().equals(event.getFriendUrl())) {
+					exist = e;
+				}
+			}
+			if (exist != null) {
+				user.getEvents().remove(exist);
+			}
+			// 添加现在的
+			user.getEvents().add(event);
+		}
+
+	}
+
+	/**
+	 * 更新"定期更新该好友偷菜事件"的事件
+	 * 
+	 * @param friendUrl
+	 */
+	private void refreshFriendUpdateEvent(String friendUrl) {
+		Event updateEvent = new Event();
+		updateEvent.setEventType(EventType.UpdateFriendEvent.toString());
+		updateEvent.setTime(new Date(new Date().getTime() + 3600 * 1000));
+		updateEvent.setFriendUrl(friendUrl);
+		updateEvent.setUrl(friendUrl);
+
+		Event exist = null;
+		for (Event e : user.getEvents()) {
+			if (e.getEventType().equals(EventType.UpdateFriendEvent.toString())
+					&& e.getFriendUrl().equals(friendUrl)) {
+				exist = e;
+			}
+		}
+		if (exist != null) {
+			user.getEvents().remove(exist);
+		}
+		// 添加现在的
+		user.getEvents().add(updateEvent);
 	}
 
 	private Link getStaredOrUnStaredLink(String content) {
@@ -118,5 +191,19 @@ public class AutoWorkUtility {
 					.makeUnstaredLinkName(content));
 		}
 		return link;
+	}
+
+	private void processFriendUpdateEvent(Event event) {
+		Link link = new Link(webControl, "friend link", event.getFriendUrl());
+		this.refreshFriendEvent(link);
+	}
+
+	private void processStealEvent(Event event) {
+		Link link = new Link(webControl, "friend link", event.getFriendUrl());
+
+		// 更新此好友的偷菜事件
+		this.refreshFriendEvent(link);
+		// 更新此好友的定期更新事件
+		this.refreshFriendUpdateEvent(event.getFriendUrl());
 	}
 }

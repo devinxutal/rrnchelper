@@ -1,7 +1,8 @@
 package rrnchelper.util;
 
 public enum EventType {
-	System,
-	Farm,
-	Steal
+	SystemEvent,
+	FarmWorkEvent,
+	StealEvent,
+	UpdateFriendEvent,
 }
