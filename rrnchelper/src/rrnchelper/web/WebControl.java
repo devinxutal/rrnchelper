@@ -27,27 +27,27 @@ public class WebControl {
 		this.domain = domain;
 	}
 
-	
-	public boolean go(Link link){
-		if(link != null){
-		return go(link.getFullUrl());
-		}else{
+	public boolean go(Link link) {
+		if (link != null) {
+			return go(link.getFullUrl());
+		} else {
 			return false;
 		}
 	}
-	
-	public boolean go(String url){
+
+	public boolean go(String url) {
 		return doGet(url);
 	}
-	
-	public boolean goByLinkName(String linkName){
+
+	public boolean goByLinkName(String linkName) {
 		Link link = getLinkByName(linkName);
-		if(link != null){
+		if (link != null) {
 			return go(link);
+
 		}
 		return false;
 	}
-	
+
 	/**
 	 * @deprecated use go(String url) instead
 	 * @param url
@@ -58,10 +58,11 @@ public class WebControl {
 		return true;
 	}
 
-	public Link getLinkByName(String name){
+	public Link getLinkByName(String name) {
 		Parser parser = Parser.createParser(currentContent, charset);
 		try {
-			NodeList linkNodeList = parser.parse(new NodeClassFilter(LinkTag.class));
+			NodeList linkNodeList = parser.parse(new NodeClassFilter(
+					LinkTag.class));
 			LinkTag linkNode = null;
 			for (Node node : linkNodeList.toNodeArray()) {
 				if (((LinkTag) node).getLinkText().equals(name)) {
@@ -75,16 +76,17 @@ public class WebControl {
 		return null;
 	}
 
-	public List<Link> getLinksByPartialName(String partialname){
+	public List<Link> getLinksByPartialName(String partialname) {
 		Parser parser = Parser.createParser(currentContent, charset);
 		List<Link> links = new LinkedList<Link>();
 		try {
-			NodeList linkNodeList = parser.parse(new NodeClassFilter(LinkTag.class));
+			NodeList linkNodeList = parser.parse(new NodeClassFilter(
+					LinkTag.class));
 			LinkTag linkNode = null;
 			for (Node node : linkNodeList.toNodeArray()) {
 				linkNode = (LinkTag) node;
 				if (linkNode.getLinkText().contains(partialname)) {
-					
+
 					links.add(newLink(linkNode));
 				}
 			}
@@ -93,8 +95,7 @@ public class WebControl {
 		}
 		return links;
 	}
-	
-	
+
 	/**
 	 * @deprecated
 	 * @param name
@@ -104,7 +105,8 @@ public class WebControl {
 		System.out.println("click " + name);
 		Parser parser = Parser.createParser(currentContent, charset);
 		try {
-			NodeList linkNodeList = parser.parse(new NodeClassFilter(LinkTag.class));
+			NodeList linkNodeList = parser.parse(new NodeClassFilter(
+					LinkTag.class));
 			LinkTag linkNode = null;
 			for (Node node : linkNodeList.toNodeArray()) {
 				if (((LinkTag) node).getLinkText().equals(name)) {
@@ -134,7 +136,8 @@ public class WebControl {
 			HttpURLConnection con = (HttpURLConnection) url.openConnection();
 			con.setInstanceFollowRedirects(false);
 			con.connect();
-			BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream(), charset));
+			BufferedReader br = new BufferedReader(new InputStreamReader(con
+					.getInputStream(), charset));
 			String s = "";
 			while ((s = br.readLine()) != null) {
 				sb.append(s).append("\r\n");
@@ -166,6 +169,7 @@ public class WebControl {
 
 	public String getDomain() {
 		return domain;
+
 	}
 
 	public void setDomain(String domain) {
@@ -179,16 +183,14 @@ public class WebControl {
 	public void setCharset(String charset) {
 		this.charset = charset;
 	}
-	
-	
-	
-	///////////////////////////////////////
-	//private methods//////////////////////
-	///////////////////////////////////////
-	
-	private Link newLink(LinkTag link){
+
+	// /////////////////////////////////////
+	// private methods//////////////////////
+	// /////////////////////////////////////
+
+	private Link newLink(LinkTag link) {
 		String name = link.getLinkText();
 		String url = link.getLink();
-		return new Link(this, name ,url);
+		return new Link(this, name, url);
 	}
 }

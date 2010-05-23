@@ -3,6 +3,7 @@ package rrnchelper.util;
 import java.util.LinkedList;
 import java.util.List;
 
+import rrnchelper.model.Crop;
 import rrnchelper.model.Event;
 import rrnchelper.model.Product;
 import rrnchelper.model.User;
@@ -19,7 +20,7 @@ public class AutoWorkUtility {
 
 	public AutoWorkUtility(User user) {
 		this.user = user;
-		this.webControl = new WebControl();
+		this.webControl = user.getWebControl();
 	}
 
 	public User getUser() {
@@ -28,6 +29,7 @@ public class AutoWorkUtility {
 
 	public void setUser(User user) {
 		this.user = user;
+		this.webControl = user.getWebControl();
 	}
 
 	// //////////////
@@ -64,7 +66,7 @@ public class AutoWorkUtility {
 	}
 
 	public void refreshEvents() {
-
+		refreshAllFriendEvents();
 	}
 
 	public void refreshAllFriendEvents() {
@@ -87,15 +89,24 @@ public class AutoWorkUtility {
 		event.setDescription(friendlink.getName());
 		event.setUrl(friendlink.getFullUrl());
 		event.setEventType(EventType.Steal.toString());
+		List<Crop> crops = new LinkedList<Crop>();
 		for (Product product : user.getMyFarm().getProducts()) {
 			if (friendlink.go()) {
 				Link link = this.getStaredOrUnStaredLink(product.getType());
 				if (link != null && link.go()) {
-					do{
-						//TODO
-					}while(webControl.goByLinkName("下一页"));
+					do {
+						crops.addAll(CropUtility.parseCrops(webControl));
+					} while (webControl.goByLinkName("下一页"));
 				}
 			}
+		}
+		for (Crop crop : crops) {
+			System.out.println("=======================");
+			System.out.println(crop.getName());
+			System.out.println(crop.getStatus());
+			System.out.println(crop.getRipeTime());
+			System.out.println(crop.isReapable());
+			System.out.println(crop.getReapUrl());
 		}
 	}
 
