@@ -10,7 +10,6 @@ import javax.jdo.annotations.PrimaryKey;
 
 import com.google.appengine.api.datastore.Key;
 
-
 @PersistenceCapable(identityType = IdentityType.APPLICATION, detachable = "true")
 public class Event {
 	@PrimaryKey
@@ -21,13 +20,21 @@ public class Event {
 	@Persistent
 	private String url;
 	@Persistent
+	private String friendUrl;
+	@Persistent
 	private String description;
-
-
 	@Persistent
 	private Date time;
 	@Persistent
 	private User user;
+
+	public String getFriendUrl() {
+		return friendUrl;
+	}
+
+	public void setFriendUrl(String friendUrl) {
+		this.friendUrl = friendUrl;
+	}
 
 	public Event() {
 	}
@@ -81,7 +88,7 @@ public class Event {
 	public void setKey(Key key) {
 		this.key = key;
 	}
-	
+
 	public String getDescription() {
 		return description;
 	}
