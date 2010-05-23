@@ -10,9 +10,6 @@ import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
-import rrnchelper.util.LogType;
-import rrnchelper.util.LoggingUtility;
-import rrnchelper.web.Link;
 import rrnchelper.web.WebControl;
 
 import com.google.appengine.api.datastore.Key;
@@ -36,42 +33,12 @@ public class User {
 	public boolean autoWork;
 	@Persistent(mappedBy = "user")
 	private List<Log> logs;
+	@Persistent(mappedBy = "user")
+	private List<Event> events;
 
 	public User() {
 		webControl = new WebControl("http://mapps.renren.com");
 		autoWork = false;
-	}
-
-	public void gotoMyFarm() {
-		myFarm = new Farm(farmAddress);
-		webControl.go(myFarm.getFarmAddress());
-	}
-
-	public void checkEveryType() {
-		for (Product product : myFarm.getProducts()) {
-			Link link = webControl
-					.getLinkByName("【" + product.getType() + "】★");
-			if (link != null && link.go()) {
-					reapAllProducts(product);
-			}
-			gotoMyFarm();
-		}
-	}
-
-	public void reapAllProducts(Product product) {
-		Link link = webControl.getLinkByName(product.getReapAction());
-		if(link != null && link.go()){
-			LoggingUtility.logging(this, LogType.Farm, "成功收获"
-					+ product.getType() + "中的作物");
-		}
-	}
-
-	public void feed() {
-
-	}
-
-	public void reapTheProduct() {
-
 	}
 
 	public String getUsername() {
@@ -99,6 +66,9 @@ public class User {
 	}
 
 	public Farm getMyFarm() {
+		if (myFarm == null) {
+			myFarm = new Farm(this.getFarmAddress());
+		}
 		return myFarm;
 	}
 
@@ -114,7 +84,7 @@ public class User {
 		this.autoWork = autoWork;
 	}
 
-	public Key getId() {
+	public Key getKey() {
 		return key;
 	}
 
@@ -139,6 +109,17 @@ public class User {
 
 	public void setLogs(List<Log> logs) {
 		this.logs = logs;
+	}
+
+	public List<Event> getEvents() {
+		if (events == null) {
+			events = new LinkedList<Event>();
+		}
+		return events;
+	}
+
+	public void setEvents(List<Event> events) {
+		this.events = events;
 	}
 
 }
