@@ -13,7 +13,7 @@ public class Product {
 		if (农田.equals(type)) reapAction = "收获全部农产品";
 		if (果树.equals(type)) reapAction = "收获全部果树产品";
 		if (畜牧.equals(type)) reapAction = "收获全部畜牧产品";
-		if (机械.equals(type)) reapAction = "收获全部机械产品";
+		if (机械.equals(type)) reapAction = "收获全部加工产品";
 	}
 	
 	public String getType() {
