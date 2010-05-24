@@ -15,21 +15,25 @@ import rrnchelper.util.LoggingUtility;
 
 public class StartSevlet extends HttpServlet {
 
-	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 
 		process(request, response);
 	}
 
-	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 
 		process(request, response);
 	}
 
-	private void process(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	private void process(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
 		User user = UserDao.findAll().get(0);
 		user.setAutoWork(true);
 		LoggingUtility.logging(user, LogType.System, "自动收菜程序已经启动");
 		UserDao.saveOrUpdateUser(user);
 		response.sendRedirect("/");
+		UserDao.closePersistenceManager();
 	}
 }

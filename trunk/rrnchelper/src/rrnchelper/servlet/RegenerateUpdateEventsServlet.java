@@ -12,7 +12,7 @@ import rrnchelper.db.dao.UserDao;
 import rrnchelper.model.User;
 import rrnchelper.util.AutoWorkUtility;
 
-public class RefreshEventsServlet extends HttpServlet {
+public class RegenerateUpdateEventsServlet extends HttpServlet {
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		process(request, response);
@@ -30,8 +30,9 @@ public class RefreshEventsServlet extends HttpServlet {
 		for (User user : users) {
 			utility.setUser(user);
 			utility.gotoFarm();
-			utility.refreshEvents();
+			utility.regenerateFriendUpdateEvents();
 			UserDao.saveOrUpdateUser(user);
 		}
+		UserDao.closePersistenceManager();
 	}
 }
