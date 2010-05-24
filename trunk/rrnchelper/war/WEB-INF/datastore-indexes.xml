@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<datastore-indexes autoGenerate="false">
+    <datastore-index kind="Event" ancestor="true" source="auto">
+        <property name="events_INTEGER_IDX" direction="asc"/>
+    </datastore-index>
+    <datastore-index kind="Log" ancestor="true" source="auto">
+        <property name="logs_INTEGER_IDX" direction="asc"/>
+    </datastore-index>
+</datastore-indexes>
