@@ -15,6 +15,7 @@ import rrnchelper.web.WebControl;
 public class AutoWorkUtility {
 	private User user;
 	private WebControl webControl;
+	private int eventProcessCountPerRequest = 2;
 
 	public AutoWorkUtility() {
 		this(null);
@@ -74,6 +75,9 @@ public class AutoWorkUtility {
 		for (Event event : user.getEvents()) {
 			if (event.getTime().before(new Date())) {
 				eventsToBeProcessed.add(event);
+				if (eventsToBeProcessed.size() == this.eventProcessCountPerRequest) {
+					break;
+				}
 			}
 		}
 
@@ -107,13 +111,13 @@ public class AutoWorkUtility {
 			} while (webControl.goByLinkName("下一页"));
 			// 处理每个好友
 			for (Link link : links) {
-				refreshFriendEvent(link);
+				refreshFriendStealEvent(link);
 				UserDao.saveOrUpdateUser(user);
 			}
 		}
 	}
 
-	private void refreshFriendEvent(Link friendlink) {
+	private void refreshFriendStealEvent(Link friendlink) {
 		Event event = new Event();
 		event.setDescription(friendlink.getName());
 		event.setUrl(friendlink.getFullUrl());
@@ -140,6 +144,7 @@ public class AutoWorkUtility {
 				}
 			}
 		}
+		// 更新Steal事件
 		if (tempCrop != null) {
 			event.setTime(tempCrop.getRipeTime());
 			// 删除已经存在的事件
@@ -156,7 +161,39 @@ public class AutoWorkUtility {
 			// 添加现在的
 			user.getEvents().add(event);
 		}
+	}
 
+	public void regenerateFriendUpdateEvents() {
+		gotoFarm();
+		if (webControl.goByLinkName(StringUtility.makeStaredLinkName("好友农场"))) {
+			List<Link> links = new LinkedList<Link>();
+			// 获得所有好友链接
+			do {
+				links.addAll(webControl.getLinksByPartialName("的农场"));
+			} while (webControl.goByLinkName("下一页"));
+			// 删除已有的更新事件
+			LinkedList<Event> eventsToRemove = new LinkedList<Event>();
+			for (Event e : user.getEvents()) {
+				if (e.getEventType().equals(EventType.UpdateFriendEvent)) {
+					eventsToRemove.add(e);
+				}
+			}
+			user.getEvents().removeAll(eventsToRemove);
+			// 处理每个好友
+			int index = 0;
+			for (Link link : links) {
+				Event event = new Event();
+				event.setEventType(EventType.UpdateFriendEvent.toString());
+				event.setDescription(link.getName());
+				event
+						.setTime(new Date(new Date().getTime() + 60 * 1000
+								* index));
+				event.setUrl(link.getFullUrl());
+				event.setFriendUrl(link.getFullUrl());
+				user.getEvents().add(event);
+				index++;
+			}
+		}
 	}
 
 	/**
@@ -164,17 +201,18 @@ public class AutoWorkUtility {
 	 * 
 	 * @param friendUrl
 	 */
-	private void refreshFriendUpdateEvent(String friendUrl) {
+	private void refreshFriendUpdateEvent(Link friendlink) {
 		Event updateEvent = new Event();
 		updateEvent.setEventType(EventType.UpdateFriendEvent.toString());
 		updateEvent.setTime(new Date(new Date().getTime() + 3600 * 1000));
-		updateEvent.setFriendUrl(friendUrl);
-		updateEvent.setUrl(friendUrl);
+		updateEvent.setFriendUrl(friendlink.getFullUrl());
+		updateEvent.setUrl(friendlink.getFullUrl());
+		updateEvent.setDescription(friendlink.getName());
 
 		Event exist = null;
 		for (Event e : user.getEvents()) {
 			if (e.getEventType().equals(EventType.UpdateFriendEvent.toString())
-					&& e.getFriendUrl().equals(friendUrl)) {
+					&& e.getFriendUrl().equals(friendlink.getFullUrl())) {
 				exist = e;
 			}
 		}
@@ -196,16 +234,18 @@ public class AutoWorkUtility {
 	}
 
 	private void processFriendUpdateEvent(Event event) {
-		Link link = new Link(webControl, "friend link", event.getFriendUrl());
-		this.refreshFriendEvent(link);
+		Link link = new Link(webControl, event.getDescription(), event
+				.getFriendUrl());
+		this.refreshFriendStealEvent(link);
+		// 更新此好友的定期更新事件
+		refreshFriendUpdateEvent(link);
 	}
 
 	private void processStealEvent(Event event) {
 		Link link = new Link(webControl, "friend link", event.getFriendUrl());
-
 		// 更新此好友的偷菜事件
-		this.refreshFriendEvent(link);
+		this.refreshFriendStealEvent(link);
 		// 更新此好友的定期更新事件
-		this.refreshFriendUpdateEvent(event.getFriendUrl());
+		this.refreshFriendUpdateEvent(link);
 	}
 }

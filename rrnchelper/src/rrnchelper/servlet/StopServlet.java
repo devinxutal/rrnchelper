@@ -31,5 +31,6 @@ public class StopServlet extends HttpServlet {
 		LoggingUtility.logging(user, LogType.System, "自动收菜程序已经停止");
 		UserDao.saveOrUpdateUser(user);
 		response.sendRedirect("/");
+		UserDao.closePersistenceManager();
 	}
 }
