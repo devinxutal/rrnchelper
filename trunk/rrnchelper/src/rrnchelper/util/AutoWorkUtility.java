@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.jdo.Transaction;
+
 import rrnchelper.db.dao.UserDao;
 import rrnchelper.model.Crop;
 import rrnchelper.model.Event;
@@ -82,13 +84,27 @@ public class AutoWorkUtility {
 		}
 
 		for (Event event : eventsToBeProcessed) {
-			user.getEvents().remove(event);
-			if (event.getEventType().equals(
-					EventType.UpdateFriendEvent.toString())) {
-				processFriendUpdateEvent(event);
-			} else if (event.getEventType().equals(
-					EventType.StealEvent.toString())) {
-				processStealEvent(event);
+			Transaction tx = UserDao.getPersistenceManager()
+					.currentTransaction();
+			try {
+				tx.begin();
+				user.getEvents().remove(event);
+				if (event.getEventType().equals(
+						EventType.UpdateFriendEvent.toString())) {
+					processFriendUpdateEvent(event);
+				} else if (event.getEventType().equals(
+						EventType.StealEvent.toString())) {
+					processStealEvent(event);
+				}
+				tx.commit();
+			} catch (Exception e) {
+				System.out.println("Error Occured: "
+						+ e.getClass().getName());
+			}finally{
+				if(tx.isActive()){
+					tx.rollback();
+					System.out.println("Transaction Rollback");
+				}
 			}
 		}
 	}
@@ -242,7 +258,7 @@ public class AutoWorkUtility {
 	}
 
 	private void processStealEvent(Event event) {
-		Link link = new Link(webControl, "friend link", event.getFriendUrl());
+		Link link = new Link(webControl, event.getDescription(), event.getFriendUrl());
 		// 更新此好友的偷菜事件
 		this.refreshFriendStealEvent(link);
 		// 更新此好友的定期更新事件
