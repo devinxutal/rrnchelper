@@ -30,7 +30,7 @@ public class AutoWorkServlet extends HttpServlet {
 		AutoWorkUtility utility = new AutoWorkUtility();
 		for (User user : users) {
 			utility.setUser(user);
-			utility.checkEvent();
+			//utility.checkEvent();
 			utility.gotoFarm();
 			utility.checkEveryType();
 			UserDao.saveOrUpdateUser(user);
