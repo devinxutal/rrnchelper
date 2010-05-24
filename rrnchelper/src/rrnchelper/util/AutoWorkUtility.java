@@ -22,7 +22,9 @@ public class AutoWorkUtility {
 
 	public AutoWorkUtility(User user) {
 		this.user = user;
-		this.webControl = user.getWebControl();
+		if (user != null) {
+			this.webControl = user.getWebControl();
+		}
 	}
 
 	public User getUser() {

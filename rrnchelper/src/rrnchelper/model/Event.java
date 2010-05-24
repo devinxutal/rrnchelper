@@ -27,6 +27,7 @@ public class Event {
 	private Date time;
 	@Persistent
 	private User user;
+	
 
 	public String getFriendUrl() {
 		return friendUrl;
