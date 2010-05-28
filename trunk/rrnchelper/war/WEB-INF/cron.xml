@@ -6,4 +6,10 @@
 		<schedule>every 1 minutes</schedule>
 		<timezone>Asia/Shanghai</timezone>
 	</cron>
+	<cron>
+		<url>/autosteal.do</url>
+		<description>Repopulate the cache every 1 minutes</description>
+		<schedule>every 1 minutes</schedule>
+		<timezone>Asia/Shanghai</timezone>
+	</cron>
 </cronentries>
