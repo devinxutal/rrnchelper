@@ -6,9 +6,16 @@ import java.util.List;
 
 import javax.jdo.Transaction;
 
+import org.htmlparser.Node;
+import org.htmlparser.Parser;
+import org.htmlparser.filters.HasAttributeFilter;
+import org.htmlparser.nodes.TextNode;
+import org.htmlparser.util.NodeList;
+
 import rrnchelper.db.dao.UserDao;
 import rrnchelper.model.Crop;
 import rrnchelper.model.Event;
+import rrnchelper.model.Log;
 import rrnchelper.model.Product;
 import rrnchelper.model.User;
 import rrnchelper.web.Link;
@@ -59,8 +66,7 @@ public class AutoWorkUtility {
 	public void reapAllProducts(Product product) {
 		Link link = webControl.getLinkByName(product.getReapAction());
 		if (link != null && link.go()) {
-			LoggingUtility.logging(user, LogType.Farm, "成功收获"
-					+ product.getType() + "中的作物");
+			checkReapResult();
 		}
 	}
 
@@ -98,10 +104,9 @@ public class AutoWorkUtility {
 				}
 				tx.commit();
 			} catch (Exception e) {
-				System.out.println("Error Occured: "
-						+ e.getClass().getName());
-			}finally{
-				if(tx.isActive()){
+				System.out.println("Error Occured: " + e.getClass().getName());
+			} finally {
+				if (tx.isActive()) {
 					tx.rollback();
 					System.out.println("Transaction Rollback");
 				}
@@ -110,7 +115,84 @@ public class AutoWorkUtility {
 	}
 
 	public void stealFriend(Link friendLink) {
+		friendLink.go();
+		List<Link> links = new LinkedList<Link>();
+		for (Product product : user.getMyFarm().getProducts()) {
+			Link link = webControl
+					.getLinkByName("【" + product.getType() + "】★");
+			if (link != null) {
+				links.add(link);
+			}
+		}
+		for (Link link : links) {
+			stealFriendOnThisLink(friendLink.getName(), link);
+		}
+	}
 
+	private void stealFriendOnThisLink(String name, Link link) {
+		if (link.go()) {
+			do {
+				Link reapLink = webControl.getLinkByName("采摘");
+				if (reapLink != null && reapLink.go()) {
+					checkStealResult(name);
+					while ((reapLink = webControl.getLinkByName("采摘")) != null
+							&& reapLink.go()) {
+						checkStealResult(name);
+					}
+					break;
+				}
+			} while (webControl.goByLinkName("下一页"));
+		}
+	}
+
+	private void checkStealResult(String location) {
+		Parser parser = Parser.createParser(webControl.getCurrentContent(),
+				webControl.getCharset());
+		try {
+			NodeList nodeList = parser.parse(new HasAttributeFilter("class",
+					"farm_white orange"));
+			for (Node node : nodeList.toNodeArray()) {
+				if (node.getChildren().size() >= 1
+						&& node.getChildren().elementAt(0) instanceof TextNode) {
+					String content = ((TextNode)node.getChildren().elementAt(0)).getText();
+					if (content.contains("采摘成功")) {
+						LoggingUtility.logging(user, LogType.Steal,"在" + location + "偷菜成功，具体消息： "
+								+ content);
+						
+					} else {
+						LoggingUtility.logging(user, LogType.Steal,"在" + location + "偷菜失败，具体消息： "
+								+ content);
+
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void checkReapResult() {
+		Parser parser = Parser.createParser(webControl.getCurrentContent(),
+				webControl.getCharset());
+		try {
+			NodeList nodeList = parser.parse(new HasAttributeFilter("class",
+					"farm_white orange"));
+			for (Node node : nodeList.toNodeArray()) {
+				if (node.getChildren().size() >= 1
+						&& node.getChildren().elementAt(0) instanceof TextNode) {
+					String content = ((TextNode)node.getChildren().elementAt(0)).getText();
+					if (content.contains("菜粥成功")) {
+
+						LoggingUtility.logging(user, LogType.Farm, "收获成功，具体消息： "+content);
+						
+					} else {
+						LoggingUtility.logging(user, LogType.Farm, "收获成功，具体消息： "+content);
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void refreshEvents() {
@@ -258,10 +340,19 @@ public class AutoWorkUtility {
 	}
 
 	private void processStealEvent(Event event) {
-		Link link = new Link(webControl, event.getDescription(), event.getFriendUrl());
+		Link link = new Link(webControl, event.getDescription(), event
+				.getFriendUrl());
 		// 更新此好友的偷菜事件
 		this.refreshFriendStealEvent(link);
 		// 更新此好友的定期更新事件
 		this.refreshFriendUpdateEvent(link);
+	}
+
+	public void stealLuoQi() {
+		Link link = new Link(
+				this.webControl,
+				"罗绮的农场",
+				"http://mapps.renren.com/rr_farm/farm/action/wap,friendsFarmAction.php?fid=231822369&r=_bca14e929715&sid=7b2707218901e9e9a925c17194b782f94");
+		this.stealFriend(link);
 	}
 }

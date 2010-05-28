@@ -18,6 +18,10 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
     <servlet-class>rrnchelper.servlet.AutoWorkServlet</servlet-class>
   </servlet>
   <servlet>
+    <servlet-name>AutoStealServlet</servlet-name>
+    <servlet-class>rrnchelper.servlet.AutoStealServlet</servlet-class>
+  </servlet>
+  <servlet>
     <servlet-name>RegisterServlet</servlet-name>
     <servlet-class>rrnchelper.servlet.RegisterServlet</servlet-class>
   </servlet>
@@ -39,6 +43,10 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
   <servlet-mapping>
     <servlet-name>AutoWorkServlet</servlet-name>
     <url-pattern>/autowork.do</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>AutoStealServlet</servlet-name>
+    <url-pattern>/autosteal.do</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>RegisterServlet</servlet-name>
