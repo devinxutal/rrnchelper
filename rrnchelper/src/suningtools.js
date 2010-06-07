@@ -9,7 +9,8 @@ var cssNode = document.createElement('style');
 cssNode.setAttribute('type', "text/css");
 cssNode.innerHTML = 
 	'.suninglink:hover{color:#fff !important; background-color:#7EC3DB;}' +
-	'ul.suning{height: auto !important; overflow:hidden; background-color:#E9F5FA}';
+	'ul.suning{height: auto !important; overflow:hidden; background-color:#E9F5FA}'+
+	'.suningdonatelink{position: relative; top: 5px; display: inline; width: 25px; height: 25px;}';
 document.getElementsByTagName('head').item(0).appendChild(cssNode);
 
 
@@ -52,8 +53,9 @@ for (var i = 0; i < allLinks.snapshotLength; i++) {
 	thisLink = allLinks.snapshotItem(i);
 	var ind = thisLink.href.lastIndexOf('/');
 	uid = thisLink.href.substring(ind+1);
-	var dlink = createlink('donate','http://www.erepublik.com/en/citizen/donate/items/'+uid);
-	customizeLinkInMailBox(dlink);
+	var dlink = createDonateLink('donate','http://www.erepublik.com/en/citizen/donate/items/'+uid);
+	//customizeLinkInMailBox(dlink);
+	thisLink.parentNode.appendChild(document.createElement('br'));
 	thisLink.parentNode.appendChild(dlink);
 }
 
@@ -74,3 +76,13 @@ function createlink(text, url){
 	link.setAttribute('target', 'blank');
 	return link;
 }
+function createDonateLink(text, url){
+	var link = document.createElement("a");
+	link.className = "suningdonatelink";
+	link.innerHTML = '<img width="18px" height="16px" onclick="" src="/images/parts/gold-to.gif" alt="Donate">'
+	link.href = url;
+	link.setAttribute('target', 'blank');
+	link.setAttribute('title', 'Donate');
+	return link;
+}
+
