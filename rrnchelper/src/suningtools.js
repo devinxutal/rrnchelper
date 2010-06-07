@@ -21,18 +21,12 @@ exchanges.push(new Array('GOLD', 'GBP'));
 addCss();
 addToolbox();
 addQuickLinks();
-addExchangeRates();
+if (window.location.href == 'http://www.erepublik.com/en') {
+	addExchangeRates();
+}
 addDonateLinksInMailBox();
-/*
-	var sReq = "http://api.erepublik.com/v1/feeds/exchange/GBP/GOLD.json";
-	GM_xmlhttpRequest({
-		method: 'GET',
-		url: sReq,
-		onload: function (json) {
-			alert(json.responseText);
-		}
-	});
-*/
+
+
 function addCss(){
 	var cssNode = document.createElement('style');
 	cssNode.setAttribute('type', "text/css");
