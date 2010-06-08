@@ -17,10 +17,15 @@ accounts[3] = new Array('SUNING INVESTMENT', 3428299, 'http://www.erepublik.com/
 var exchanges = new Array();
 exchanges.push(new Array('GOLD', 'CNY'));
 exchanges.push(new Array('GOLD', 'GBP'));
+//friends
+var friendsToTrack = new Array();
+friendsToTrack.push(3471797);
+friendsToTrack.push(3053396);
 
 addCss();
 addToolbox();
 addQuickLinks();
+addFriendTracks();
 if (window.location.href == 'http://www.erepublik.com/en') {
 	addExchangeRates();
 }
@@ -33,11 +38,15 @@ function addCss(){
 	cssNode.innerHTML = '.suninglink:hover{color:#fff !important; background-color:#7EC3DB;}' +
 	
 	'ul.suning{height: auto !important; overflow:hidden; background-color:#E9F5FA}' +
-	'.suningdonatelink{position: relative; top: 5px; display: inline; width: 25px; height: 25px;}' +
+	'.suningdonatelink{position: relative; top: 1px;display: inline; width: 25px; height: 25px;}' +
+	'.suningdonatelink{position: relative; top: 1px;display: inline; width: 25px; height: 25px;}' +
 	'.suning_toolbox{background-color:#fff; border: 1px solid #7EC3DB; position:fixed; right:10px; top:220px;}' +
 	'.suning_toolbox li{padding-left:10px; padding-right:10px;border-bottom:1px dashed #E9F5FA;}' +
-	'.suning_toolbox .namelink{ width:150px; display:inline-block; height:auto;font-size:12px; padding:3px; margin:3px;}' +
+	'.suning_toolbox .namelink{ width:150px; display:inline-block; height:auto;font-size:12px; padding:3px;}' +
 	'.suning_toolbox .namelink:hover{color:#d95 !important; }' +
+	'.suning_toolbox a{padding:0px; }' +
+	'.suning_toolbox a:hover{color:#d95; }' +
+	'.suning_toolbox a img{height:10px; width: 12px; margin-right:5px;}' +
 	'.suning_toolbox .section_title{background-color:#E9F5FA; color: #90BCC9; font-size:14px; font-weight:bold; text-align:center;display:block; padding:3px;}'+
 	'.suning_toolbox table{color:#90BCC9; font-size:10px;}'+
 	'.suning_toolbox td{border-bottom:dotted 1px #E9F5FA; padding:2px; color:#3C8FA7;}'+
@@ -66,6 +75,7 @@ function addQuickLinks(){
 }
 
 function addExchangeRates(){
+	document.getElementById('suning-toolbox').appendChild(createSection('exchange-table', 'Exchange Monitor'));
 	var tb = document.createElement('table');
 	tb.setAttribute('cellpadding','2px');
 	tb.setAttribute('cellspacing','1px');
@@ -116,6 +126,64 @@ function createExchagngeRateEntry(buy, sell){
 	});
 	return tr;
 }
+
+
+function addFriendTracks(){
+	document.getElementById('suning-toolbox').appendChild(createSection('friends-track', 'Track Friends'));
+	var tb = document.createElement('table');
+	tb.setAttribute('cellpadding','2px');
+	tb.setAttribute('cellspacing','1px');
+	tb.setAttribute('width','100%');
+	var tbody = document.createElement('tbody');
+	tb.innerHTML = '<thead><th>Name</th><th>Lvl.</th><th>Exp.</th><th>Wel.</th><th>Fights</th><th>Go</th></thead>'
+	tb.appendChild(tbody);
+	document.getElementById('friends-track').appendChild(tb);
+	for (var i = 0; i < friendsToTrack.length; i++) {
+		tbody.appendChild(createFriendTrackEntry(friendsToTrack[i]));
+	}
+}
+
+function createFriendTrackEntry(fid){
+	var tr = document.createElement('tr');
+	
+	var sReq = "http://api.erepublik.com/v1/feeds/citizens/"+fid+".json";
+	GM_xmlhttpRequest({
+		method: 'GET',
+		url: sReq,
+		onload: function (json) {
+			eval("jsonObj = " + json.responseText);
+			// name
+			var td = document.createElement('td');
+			td.innerHTML = '<a href="'+('http://www.erepublik.com/en/citizen/profile/'+fid)+'">'+jsonObj["name"]+'</a>';
+			tr.appendChild(td);
+			// level
+			td = document.createElement('td');
+			td.innerHTML = jsonObj["level"];
+			tr.appendChild(td);
+			// exp
+			td = document.createElement('td');
+			td.innerHTML = jsonObj["experience_points"];
+			tr.appendChild(td);
+			// wellness
+			td = document.createElement('td');
+			td.innerHTML = jsonObj["wellness"];
+			tr.appendChild(td);
+			// fights
+			td = document.createElement('td');
+			td.innerHTML = jsonObj["fights"];
+			tr.appendChild(td);
+			// link
+			td = document.createElement('td');
+			td.appendChild(createDonateLink('Donate',"http://www.erepublik.com/en/citizen/donate/items/"+fid ));
+			td.appendChild(createMessageLink(fid ));
+			
+			tr.appendChild(td);
+		}
+	});
+	return tr;
+}
+
+
 function addDonateLinksInMailBox(){
 	var allLinks, thisLink, uid;
 	
@@ -152,6 +220,17 @@ function createDonateLink(text, url){
 	link.setAttribute('title', 'Donate');
 	return link;
 }
+function createMessageLink(id){
+	var link = document.createElement("a");
+	link.className = "suningmsglink";
+	link.innerHTML = '<img width="18px" height="16px" onclick="" src="/images/parts/btn-icon_send-message.gif" alt="Donate">'
+	link.href = 'http://www.erepublik.com/en/messages/compose/'+id;
+	link.setAttribute('target', 'blank');
+	link.setAttribute('title', 'Send a message');
+	return link;
+}
+
+
 function createNameLink(text, url){
 	var link = document.createElement("a");
 	link.className = "namelink";
@@ -179,7 +258,6 @@ function addToolbox(){
 	div.className = 'suning_toolbox';
 	
 	div.appendChild(createSection('quick-link', 'Quick Links'));
-	div.appendChild(createSection('exchange-table', 'Exchange Monitor'));
 	
 	
 	//add
