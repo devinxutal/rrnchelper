@@ -5,7 +5,18 @@
 // @include        http://www.erepublik.com/*
 // ==/UserScript==
 
-
+/* current feeds
+ * http://api.erepublik.com/v1/feeds/citizens/{USER_ID}
+ * http://api.erepublik.com/v1/feeds/citizens/{USER_NAME}?by_username=true
+ * http://api.erepublik.com/v1/feeds/countries
+ * http://api.erepublik.com/v1/feeds/countries/{COUNTRY_ID}
+ * http://api.erepublik.com/v1/feeds/regions/{REGION_ID}
+ * http://api.erepublik.com/v1/feeds/companies/COMPANY_ID}
+ * http://api.erepublik.com/v1/feeds/market/{INDUSTRY}/{QUALITY}/{COUNTRY}   e.g. http://api.erepublik.com/v1/feeds/market/food/1/china
+ * http://api.erepublik.com/v1/feeds/exchange/{BUY}/{SELL}
+ * http://api.erepublik.com/v1/feeds/battle_logs/{BATTLE_ID}/{PAGE}
+ * http://api.erepublik.com/v1/feeds/war/{WAR_ID}
+ */
 
 // set accounts;
 var accounts = new Array();
@@ -13,7 +24,7 @@ accounts[0] = new Array('Devin XU', 3010076, 'http://www.erepublik.com/en/citize
 accounts[1] = new Array('SUNING UNIVERSAL', 3060005, 'http://www.erepublik.com/en/organization/3060005');
 accounts[2] = new Array('SUNING MART', 3148944, 'http://www.erepublik.com/en/organization/3148944');
 accounts[3] = new Array('SUNING INVESTMENT', 3428299, 'http://www.erepublik.com/en/organization/3428299');
-
+//exchages
 var exchanges = new Array();
 exchanges.push(new Array('GOLD', 'CNY'));
 exchanges.push(new Array('GOLD', 'GBP'));
@@ -21,15 +32,29 @@ exchanges.push(new Array('GOLD', 'GBP'));
 var friendsToTrack = new Array();
 friendsToTrack.push(3471797);
 friendsToTrack.push(3053396);
+//goods to monitor
+var productsToMonitor = new Array();
+productsToMonitor.push("food", 2);
+productsToMonitor.push("food", 3);
+productsToMonitor.push("food", 4);
+productsToMonitor.push("food", 5);
+productsToMonitor.push("gift", 1);
+productsToMonitor.push("weapon", 2);
+var countryToMonitor = new Array();
+countryToMonitor.push("china");
+countryToMonitor.push("uk");
+countryToMonitor.push("poland");
+countryToMonitor.push("argentina");
+
+/////////////////////////////////////
+/////////////////////////////////////
 
 addCss();
 addToolbox();
-addAddFriendSection();
 addQuickLinks();
 addFriendTracks();
-if (window.location.href == 'http://www.erepublik.com/en') {
-    addExchangeRates();
-}
+addExchangeRates();
+addAddFriendSection();
 addDonateLinksInMailBox();
 
 
@@ -41,12 +66,12 @@ function addCss(){
     'ul.suning{height: auto !important; overflow:hidden; background-color:#E9F5FA}' +
     '.suningdonatelink{position: relative; top: 1px;display: inline; width: 25px; height: 25px;}' +
     '.suningdonatelink{position: relative; top: 1px;display: inline; width: 25px; height: 25px;}' +
-    '.suning_toolbox{color:#3C8FA7; background-color:#fff; border-right: 1px solid #7EC3DB;  border-left: 1px solid #7EC3DB; border-bottom: 1px solid #7EC3DB;position:fixed; right:10px; top:220px;}' +
-    '.suning_toolbox li{padding-left:10px; padding-right:10px;border-bottom:1px dashed #E9F5FA;}' +
+    '.suning_toolbox{color:#3C8FA7; background-color:#fff; border-right: 1px solid #7EC3DB;  border-left: 1px solid #7EC3DB; border-top: 1px solid #7EC3DB;position:fixed; right:10px; top:220px;}' +
+    '.suning_toolbox li{border-bottom:1px dashed #E9F5FA;}' +
     '.suning_toolbox .namelink{ width:150px; display:inline-block; height:auto;font-size:12px; padding:3px;}' +
     '.suning_toolbox .namelink:hover{color:#d95 !important; }' +
-	'.suning_toolbox .section-container{padding:5px;}' +
-	'.suning_toolbox .section_title{ border-bottom: 1px solid #7EC3DB; border-top: 1px solid #7EC3DB;background-color:#E9F5FA; color: #90BCC9; font-size:14px; font-weight:bold; text-align:center;display:block; padding:3px;}' +
+	'.suning_toolbox .section-container{border-bottom: 1px solid #7EC3DB; padding:5px;}' +
+	'.suning_toolbox .section_title{ border-bottom: 1px solid #7EC3DB; background-color:#E9F5FA; color: #90BCC9; font-size:14px; font-weight:bold; text-align:center;display:block; padding:3px;}' +
 	'.suning_toolbox .section_title a{ border: 1px solid #7EC3DB; display: inline-block; float:right; height:12px; width:12px; font-size:10px; font-weight:normal; margin:2px;}' +
 	'.suning_toolbox .section_title a:hover{ border: 1px solid #d95; }' +
 	'.suning_toolbox a{padding:0px; }' +
@@ -85,9 +110,8 @@ function addScript(){
 }
 
 function addAddFriendSection(){
-	document.getElementById('suning-toolbox').appendChild(createSection('friend-add', 'Add Friends'));
+	document.getElementById('suning-toolbox').appendChild(createSection('friend-add', 'Add Friends',true));
     var d = document.createElement("div");
-	d.className='section-container';
     d.innerHTML = '<span>Add friends of&nbsp;</span><input id="friend-ref" type="text" /><br><br>from<input id="friend-from" style="width:80px;" type="text" />&nbsp;to<input id="friend-to" type="text" style="width:80px;" />&nbsp<a id="testlink" href="javascript:void(0)" onclick="startAddFriends()">GO</a>';
     document.getElementById("friend-add").appendChild(d);
 	
@@ -120,7 +144,7 @@ function addQuickLinks(){
 }
 
 function addExchangeRates(){
-    document.getElementById('suning-toolbox').appendChild(createSection('exchange-table', 'Exchange Monitor'));
+    document.getElementById('suning-toolbox').appendChild(createSection('exchange-table', 'Exchange Monitor',false));
     var tb = document.createElement('table');
     tb.setAttribute('cellpadding', '2px');
     tb.setAttribute('cellspacing', '1px');
@@ -129,10 +153,28 @@ function addExchangeRates(){
     tb.innerHTML = '<thead><th>Type</th><th>Amount</th><th>Rate</th><th>Account</th><th>Link</th></thead>'
     tb.appendChild(tbody);
     document.getElementById('exchange-table').appendChild(tb);
-    for (var i = 0; i < accounts.length; i++) {
-        tbody.appendChild(createExchagngeRateEntry(exchanges[i][0], exchanges[i][1]));
-        tbody.appendChild(createExchagngeRateEntry(exchanges[i][1], exchanges[i][0]));
-    }
+    var tr = document.createElement('tr');
+    var td = document.createElement('td');
+    td.setAttribute("colspan", "5");
+    td.setAttribute("style", "text-align:center;")
+    tr.appendChild(td);
+
+    var refreshlink = createScriptLink("refresh");
+    td.appendChild(refreshlink);
+    refreshlink.addEventListener("click",
+    		function (){
+    			while(tbody.firstChild != tr){
+    				tbody.removeChild(tbody.firstChild);
+    			}
+		    	for (var i = 0; i < exchanges.length; i++) {
+		    		tbody.insertBefore(createExchagngeRateEntry(exchanges[i][0], exchanges[i][1]), tr);
+		    		tbody.insertBefore(createExchagngeRateEntry(exchanges[i][1], exchanges[i][0]), tr);
+		        }
+    		},
+    		false
+    );
+    tbody.appendChild(tr);
+    
 }
 
 function createExchagngeRateEntry(buy, sell){
@@ -174,7 +216,7 @@ function createExchagngeRateEntry(buy, sell){
 
 
 function addFriendTracks(){
-    document.getElementById('suning-toolbox').appendChild(createSection('friends-track', 'Track Friends'));
+    document.getElementById('suning-toolbox').appendChild(createSection('friends-track', 'Track Friends',false));
     var tb = document.createElement('table');
     tb.setAttribute('cellpadding', '2px');
     tb.setAttribute('cellspacing', '1px');
@@ -248,6 +290,13 @@ function customizeLinkInMailBox(link){
     link.setAttribute('style', 'font-size:10px;display:block;clear:both;color: #fa4;padding-top:10px;');
 }
 
+function createScriptLink(text){
+    var link = document.createElement("a");
+    link.innerHTML = text;
+    link.href = "javascript:void(0)";
+    return link;
+}
+
 function createlink(text, url){
     var link = document.createElement("a");
     link.className = "suninglink";
@@ -304,14 +353,14 @@ function addToolbox(){
     div.id = 'suning-toolbox';
     div.className = 'suning_toolbox';
     
-    div.appendChild(createSection('quick-link', 'Quick Links'));
+    div.appendChild(createSection('quick-link', 'Quick Links',false));
     
     
     //add
     document.getElementById('container').parentNode.appendChild(div);
 }
 
-function createSection(idstr, name){
+function createSection(idstr, name, collapsed){
     var div = document.createElement('div');
     div.className = 'section';
     
@@ -326,6 +375,7 @@ function createSection(idstr, name){
     
     var div1 = document.createElement('div');
     div1.id = idstr;
+    div1.className='section-container';
     div.appendChild(div1);
     
     a.addEventListener("click", 
@@ -338,6 +388,14 @@ function createSection(idstr, name){
     				div1.setAttribute("style","display:none;");
     			}
     		}, false);
+    
+    if(collapsed){
+    	a.innerHTML = "+";
+		div1.setAttribute("style","display:none;");
+    }else{
+    	a.innerHTML = "-";
+		div1.setAttribute("style","display:block;");
+    }
     return div;
 }
 
