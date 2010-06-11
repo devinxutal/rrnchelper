@@ -34,26 +34,30 @@ friendsToTrack.push(3471797);
 friendsToTrack.push(3053396);
 //goods to monitor
 var productsToMonitor = new Array();
-productsToMonitor.push("food", 2);
-productsToMonitor.push("food", 3);
-productsToMonitor.push("food", 4);
-productsToMonitor.push("food", 5);
-productsToMonitor.push("gift", 1);
-productsToMonitor.push("weapon", 2);
+productsToMonitor.push(new Array("food", 2));
+productsToMonitor.push(new Array("food", 3));
+productsToMonitor.push(new Array("food", 4));
+productsToMonitor.push(new Array("food", 5));
+productsToMonitor.push(new Array("gift", 1));
+productsToMonitor.push(new Array("weapon", 1));
 var countryToMonitor = new Array();
 countryToMonitor.push("china");
-countryToMonitor.push("uk");
+countryToMonitor.push("united-kingdom");
 countryToMonitor.push("poland");
 countryToMonitor.push("argentina");
-
+var EXCHANGE_RATES = new Object;
+EXCHANGE_RATES["china"] = 0.02;
+EXCHANGE_RATES["united-kingdom"]= 0.026;
+EXCHANGE_RATES["poland"] = 0.02;
+EXCHANGE_RATES["argentina"] = 0.02;
 /////////////////////////////////////
 /////////////////////////////////////
-
 addCss();
 addToolbox();
 addQuickLinks();
 addFriendTracks();
 addExchangeRates();
+addLowestPriceSection();
 addAddFriendSection();
 addDonateLinksInMailBox();
 
@@ -214,6 +218,107 @@ function createExchagngeRateEntry(buy, sell){
     return tr;
 }
 
+
+function addLowestPriceSection(){
+    document.getElementById('suning-toolbox').appendChild(createSection('lowest-price', 'Lowest Prices',false));
+    var tb = document.createElement('table');
+    tb.setAttribute('cellpadding', '2px');
+    tb.setAttribute('cellspacing', '1px');
+    tb.setAttribute('width', '100%');
+    var tbody = document.createElement('tbody');
+    tb.innerHTML = '<thead><th>Product</th><th>Price</th><th>Amount</th><th>Country</th><th>Link</th></thead>'
+    tb.appendChild(tbody);
+    document.getElementById('lowest-price').appendChild(tb);
+    var tr = document.createElement('tr');
+    var td = document.createElement('td');
+    td.setAttribute("colspan", "5");
+    td.setAttribute("style", "text-align:center;")
+    tr.appendChild(td);
+
+    var refreshlink = createScriptLink("refresh");
+    td.appendChild(refreshlink);
+    refreshlink.addEventListener("click",
+    		function (){
+    			while(tbody.firstChild != tr){
+    				tbody.removeChild(tbody.firstChild);
+    			}
+		    	for (var i = 0; i < productsToMonitor.length; i++) {
+					findLowestPrice(productsToMonitor[i][0],productsToMonitor[i][1],tr);
+		        }
+    		},
+    		false
+    );
+    tbody.appendChild(tr);
+    
+}
+
+function findLowestPrice(productType, quality, insertbeforeElement){
+	var country_json_array = new Array();
+	for (var m = 0; m < countryToMonitor.length; m++) {
+		var current_country = countryToMonitor[m];
+		getPriceJsonObject(productType,quality, insertbeforeElement, current_country,country_json_array);
+	}
+}
+
+function getPriceJsonObject(productType, quality, insertbeforeElement, country, country_json_array){
+	var addr = "http://api.erepublik.com/v1/feeds/market/"+productType+"/"+quality+"/"+country+".json";
+	GM_xmlhttpRequest({
+        method: 'GET',
+        url: addr,
+        onload: function(json){
+            eval("jsonObj = " + json.responseText);
+			country_json_array.push(new Array(country, jsonObj));
+			if(country_json_array.length >= countryToMonitor.length){
+				var lid = 0;
+				var lprice = 100; //100G
+				for(var j = 0; j<countryToMonitor.length; j++){
+					var jobj = country_json_array[j][1];
+					var ctry = country_json_array[j][0];
+					var price = jobj[0]["offer"]["price"];
+					var quantity = jobj[0]["offer"]["quantity"];
+					var prc = price.slice(0, price.indexOf(' '));
+					prc = prc*EXCHANGE_RATES[ctry];
+					if(prc < lprice ){
+						lid = j;
+						lprice = prc;
+					}
+				}
+				var ele = createLowestPriceEntry(productType, quality,country_json_array[lid][0] , country_json_array[lid][1]);
+				insertbeforeElement.parentNode.insertBefore(ele, insertbeforeElement); 
+			}
+        }
+    });
+}
+function createLowestPriceEntry(productType, quality, country , jsonObj){
+    var tr = document.createElement('tr');
+ 
+    //product type
+    var td = document.createElement('td');
+    td.innerHTML = "Q"+quality + " "+productType;
+    tr.appendChild(td);
+    //price
+    td = document.createElement('td');
+	var price_local = jsonObj[0]["offer"]["price"];
+	price_local = price_local.slice(0, price_local.indexOf(' '));
+	var price_g = price_local*EXCHANGE_RATES[country];
+    td.innerHTML = Number(price_local).toFixed(2)+ " ("+price_g.toFixed(4)+"G)";
+	var test = "343";
+	
+    tr.appendChild(td);
+    //quantity
+    td = document.createElement('td');
+    td.innerHTML = jsonObj[0]["offer"]["quantity"];
+    tr.appendChild(td);
+    //country
+    td = document.createElement('td');
+    td.innerHTML = country
+    tr.appendChild(td);
+    //link
+    td = document.createElement('td');
+    td.innerHTML = 'none';
+    tr.appendChild(td);
+    return tr;
+}
 
 function addFriendTracks(){
     document.getElementById('suning-toolbox').appendChild(createSection('friends-track', 'Track Friends',false));
