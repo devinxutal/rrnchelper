@@ -8,8 +8,8 @@
 	</cron>
 	<cron>
 		<url>/autosteal.do</url>
-		<description>Repopulate the cache every 1 minutes</description>
-		<schedule>every 1 minutes</schedule>
+		<description>Repopulate the cache every 5 minutes</description>
+		<schedule>every 5 minutes</schedule>
 		<timezone>Asia/Shanghai</timezone>
 	</cron>
 </cronentries>
