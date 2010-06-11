@@ -32,7 +32,7 @@ public class AutoStealServlet extends HttpServlet {
 			utility.setUser(user);
 			//utility.checkEvent();
 			utility.gotoFarm();
-			utility.stealLuoQi();
+			utility.stealZYP();
 			UserDao.saveOrUpdateUser(user);
 		}
 		UserDao.closePersistenceManager();

@@ -348,11 +348,11 @@ public class AutoWorkUtility {
 		this.refreshFriendUpdateEvent(link);
 	}
 
-	public void stealLuoQi() {
+	public void stealZYP() {
 		Link link = new Link(
 				this.webControl,
-				"罗绮的农场",
-				"http://mapps.renren.com/rr_farm/farm/action/wap,friendsFarmAction.php?fid=231822369&r=_bca14e929715&sid=7b2707218901e9e9a925c17194b782f94");
+				"张云鹏的农场",
+				"http://mapps.renren.com/rr_farm/farm/action/wap,friendsFarmAction.php?fid=228842897&r=_520ebf9ceed5&sid=7b2707218901e9e9a925c17194b782f94");
 		this.stealFriend(link);
 	}
 }
