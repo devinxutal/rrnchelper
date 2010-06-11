@@ -28,7 +28,7 @@ accounts[3] = new Array('SUNING INVESTMENT', 3428299, 'http://www.erepublik.com/
 var exchanges = new Array();
 exchanges.push(new Array('GOLD', 'CNY'));
 exchanges.push(new Array('GOLD', 'GBP'));
-//friends
+//friends track
 var friendsToTrack = new Array();
 friendsToTrack.push(3471797);
 friendsToTrack.push(3053396);
@@ -39,6 +39,7 @@ productsToMonitor.push(new Array("food", 3));
 productsToMonitor.push(new Array("food", 4));
 productsToMonitor.push(new Array("food", 5));
 productsToMonitor.push(new Array("gift", 1));
+productsToMonitor.push(new Array("gift", 2));
 productsToMonitor.push(new Array("weapon", 1));
 var countryToMonitor = new Array();
 countryToMonitor.push("china");
@@ -50,6 +51,8 @@ EXCHANGE_RATES["china"] = 0.02;
 EXCHANGE_RATES["united-kingdom"]= 0.026;
 EXCHANGE_RATES["poland"] = 0.02;
 EXCHANGE_RATES["argentina"] = 0.02;
+//add friends
+var currentFriends = new Array();
 /////////////////////////////////////
 /////////////////////////////////////
 addCss();
@@ -116,17 +119,33 @@ function addScript(){
 function addAddFriendSection(){
 	document.getElementById('suning-toolbox').appendChild(createSection('friend-add', 'Add Friends',true));
     var d = document.createElement("div");
-    d.innerHTML = '<span>Add friends of&nbsp;</span><input id="friend-ref" type="text" /><br><br>from<input id="friend-from" style="width:80px;" type="text" />&nbsp;to<input id="friend-to" type="text" style="width:80px;" />&nbsp<a id="testlink" href="javascript:void(0)" onclick="startAddFriends()">GO</a>';
+    d.innerHTML = '<span id="friend-num">This account have 0 friends now.</span><br><br><span>Self ID&nbsp;<input id="self-id" style="width:40px;" type="text" />&nbsp;max friends&nbsp;<input id="max-friend" style="width:30px;" type="text" /><a id="refresh-friend" href="javascript:void(0)" onclick="startAddFriends()">refresh</a></span>'+
+    	'<br><br><br><span>Add friends of&nbsp;</span><input id="friend-ref" type="text" /><br><br>from<input id="friend-from" style="width:80px;" type="text" />&nbsp;to<input id="friend-to" type="text" style="width:80px;" />&nbsp<a id="add-friend" href="javascript:void(0)">GO</a>';
     document.getElementById("friend-add").appendChild(d);
 	
-	 var lk = document.getElementById("testlink");
-	 
-	 lk.addEventListener("click", function() {
-	 	var ref = document.getElementById("friend-ref").value;
-	 	var f = document.getElementById("friend-from").value;
-	 	var t = document.getElementById("friend-to").value;
-		startAddFriends("http://api.erepublik.com/v1/feeds/citizens/"+ref+".json", f,t);
-	 },false);
+	var lk = document.getElementById("add-friend");
+	lk.addEventListener(
+			"click", 
+			function() {
+				var ref = document.getElementById("friend-ref").value;
+				var f = document.getElementById("friend-from").value;
+				var t = document.getElementById("friend-to").value;
+				startAddFriends("http://api.erepublik.com/v1/feeds/citizens/"+ref+".json", f,t);
+			},
+			false
+	);
+	
+	var lk1 = document.getElementById("refresh-friend");
+	lk1.addEventListener(
+			"click", 
+			function() {
+				var max = document.getElementById("max-friend").value;
+				max = Number(max);
+				var selfid = document.getElementById("self-id").value;
+				startRefreshFriends(selfid, max);
+			},
+			false
+	);
 }
 
 function addQuickLinks(){
@@ -515,16 +534,53 @@ function startAddFriends(sreq, from, to){
 				all.push(jsonObj["friends"][i]["id"]);
 			}
 			compareAndAdd(all, from, to);
-			
         }
     });
 }
 
 function compareAndAdd(all, from, to){
 	for (var i = from; i < all.length && i < to; i++) {
-		var link = 'http://www.erepublik.com/citizen/friends/add/'+all[i];
-		alert(link);
-		window.open(link,"friend-"+all[i],"");
+		var fid = all[i];
+		var exist = false;
+		for(var j = 0; j<currentFriends.length; j++){
+			//alert(currentFriends[j]+" " +fid+" " + (currentFriends[j] === fid));
+			if(Number(currentFriends[j]) === Number(fid)){
+				exist = true;
+				break;
+			}
+		}
+		if(exist){
+			alert("The friend "+ fid+" already exists");
+		}else{
+			var link = 'http://www.erepublik.com/citizen/friends/add/'+all[i];
+			alert("add friend "+link);
+			window.open(link,"friend-"+all[i],"");
+		}
 	}
 }
 
+function startRefreshFriends(selfid, max){
+	currentFriends.length = 0;
+	var addr_t = "http://www.erepublik.com/citizen/friends/"+selfid+"/";
+	for(var i = 0; i<= (max/12);i++){
+		var addr = addr_t+i;
+		GM_xmlhttpRequest({
+	        method: 'GET',
+	        url: addr,
+	        onload: function(json){
+				eval("jsonObj = " + json.responseText);
+				var count =0;
+				for(var n = 0; n< jsonObj.length; n++){
+					var urlstr = jsonObj[n]["url"];
+					var reg = /\d+/;
+					var result = urlstr.match(reg);
+					if(result){
+						currentFriends.push(result);
+						count++;
+					}
+				}
+				document.getElementById("friend-num").innerHTML = "This account have "+currentFriends.length+" friends now.";
+	        }
+	    });
+	}
+}
