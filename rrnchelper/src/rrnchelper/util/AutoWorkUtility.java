@@ -131,6 +131,7 @@ public class AutoWorkUtility {
 			
 			//start feed animals;
 			for(Link l : links){
+				l.setName(friendLink.getName());
 				feedByFeedLink(l);
 			}
 		}
