@@ -9,18 +9,13 @@ public class TestMain {
 	public static void main(String[] args) {
 		User user = new User();
 		user
-				.setFarmAddress("http://mapps.renren.com/rr_farm/farm/action/wap,indexAction.php?r=_efba0a9bf3d9&sid=7b2707218901e9e9a925c17194b782f94");
+				.setFarmAddress("http://mapps.renren.com/rr_farm/farm/action/wap,indexAction.php?r=_c4193c07c59a&sid=bf3ae9180a92a43ea2c86cc684b443c47");
 
 		WebControl webControl = user.getWebControl();
+		user.setSid("bf3ae9180a92a43ea2c86cc684b443c47");
 		webControl.setCharset("UTF-8");
-		webControl
-				.go("http://mapps.renren.com/rr_farm/farm/action/wap,friendTreeAction.php?fid=228842897&r=_090b727e3961&sid=7b2707218901e9e9a925c17194b782f94");
 		user.setWebControl(webControl);
 		AutoWorkUtility utility = new AutoWorkUtility(user);
-		Link link = new Link(
-				webControl,
-				"Éò»ÛµÄÅ©³¡",
-				"http://mapps.renren.com/rr_farm/farm/action/wap,friendsFarmAction.php?fid=245686429&r=_8f179c5f0362&sid=7b2707218901e9e9a925c17194b782f94");
-		utility.stealFriend(link);
+		utility.feedComicLee();
 	}
 }

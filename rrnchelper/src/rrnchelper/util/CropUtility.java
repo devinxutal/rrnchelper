@@ -9,7 +9,9 @@ import java.util.regex.Pattern;
 import org.htmlparser.Node;
 import org.htmlparser.Parser;
 import org.htmlparser.filters.HasAttributeFilter;
+import org.htmlparser.filters.NodeClassFilter;
 import org.htmlparser.nodes.TextNode;
+import org.htmlparser.tags.InputTag;
 import org.htmlparser.tags.LinkTag;
 import org.htmlparser.util.NodeList;
 
@@ -17,6 +19,26 @@ import rrnchelper.model.Crop;
 import rrnchelper.web.WebControl;
 
 public class CropUtility {
+	public static String constructFeedAddress(WebControl webControl){
+		Parser parser = Parser.createParser(webControl.getCurrentContent(),
+				webControl.getCharset());
+		String addr = "http://mapps.renren.com/rr_farm/farm/action/wap,feedFriendAction.php?";
+		try {
+			NodeList nodeList = parser.parse(new NodeClassFilter(
+					InputTag.class));
+			for (Node node : nodeList.toNodeArray()) {
+				InputTag t = (InputTag)node;
+				String sub = t.getAttributeEx("name").getValue()+"="+t.getAttributeEx("value").getValue()+"&";
+				sub = sub.replaceAll("\\s", "+");
+				addr+=sub;
+			}
+			addr = addr.substring(0, addr.length()-1);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return addr;
+	}
+	
 	public static List<Crop> parseCrops(WebControl webControl) {
 		List<Crop> crops = new LinkedList<Crop>();
 		Parser parser = Parser.createParser(webControl.getCurrentContent(),

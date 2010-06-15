@@ -114,6 +114,83 @@ public class AutoWorkUtility {
 		}
 	}
 
+	//////////////////////////////////////////////////////
+	//Feed
+	/////////////////////////////////////////////////////
+	public void feedFriend(Link friendLink) {
+		feedAnimalForFriend(friendLink);
+		feedMachineForFriend(friendLink);
+	}
+	
+	private void feedAnimalForFriend(Link friendLink) {
+		if (friendLink.go() && webControl.goByLinkName("【畜牧】★")) {
+			List<Link> links = new LinkedList<Link>();
+			do {
+				links.addAll(webControl.getLinksByPartialName("喂食"));
+			} while (webControl.goByLinkName("下一页"));
+			
+			//start feed animals;
+			for(Link l : links){
+				feedByFeedLink(l);
+			}
+		}
+	}
+	
+	
+	private void feedMachineForFriend(Link friendLink) {
+		if (friendLink.go() && webControl.goByLinkName("【机械】★")) {
+			List<Link> links = new LinkedList<Link>();
+			do {
+				links.addAll(webControl.getLinksByPartialName("添加"));
+			} while (webControl.goByLinkName("下一页"));
+			
+			//start feed animals;
+			for(Link l : links){
+				feedByFeedLink(l);
+			}
+		}
+	}
+	
+	private void feedByFeedLink(Link feedLink){
+		feedLink.go();
+		String addr = CropUtility.constructFeedAddress(webControl);
+		System.out.println("Feed Address: "+ addr);
+		webControl.go(addr);
+		checkFeedResult(feedLink.getName());
+	}
+	
+	
+	private void checkFeedResult(String location) {
+		Parser parser = Parser.createParser(webControl.getCurrentContent(),
+				webControl.getCharset());
+		try {
+			NodeList nodeList = parser.parse(new HasAttributeFilter("class",
+					"farm_white orange"));
+			for (Node node : nodeList.toNodeArray()) {
+				if (node.getChildren().size() >= 1
+						&& node.getChildren().elementAt(0) instanceof TextNode) {
+					String content = ((TextNode)node.getChildren().elementAt(0)).getText();
+					if (content.contains("成功")) {
+						LoggingUtility.logging(user, LogType.Feed,"在" + location + "喂食或添加原料成功，具体消息： "
+								+ content);
+						
+					} else {
+						LoggingUtility.logging(user, LogType.Feed,"在" + location + "喂食或添加原料失败，具体消息： "
+								+ content);
+						
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+	
+	//////////////////////////////////////////////////////
+	//Steal
+	/////////////////////////////////////////////////////
 	public void stealFriend(Link friendLink) {
 		friendLink.go();
 		List<Link> links = new LinkedList<Link>();
@@ -348,11 +425,31 @@ public class AutoWorkUtility {
 		this.refreshFriendUpdateEvent(link);
 	}
 
+	
 	public void stealZYP() {
 		Link link = new Link(
 				this.webControl,
 				"张云鹏的农场",
-				"http://mapps.renren.com/rr_farm/farm/action/wap,friendsFarmAction.php?fid=228842897&r=_520ebf9ceed5&sid=7b2707218901e9e9a925c17194b782f94");
+				"http://mapps.renren.com/rr_farm/farm/action/wap,friendsFarmAction.php?fid=228842897&sid="+user.getSid());
 		this.stealFriend(link);
+	}
+	
+
+	public void feedComicLee() {
+		Link link = new Link(
+				this.webControl,
+				"陈励的农场",
+				"http://mapps.renren.com/rr_farm/farm/action/wap,friendsFarmAction.php?fid=47366&sid="+user.getSid());
+		System.out.println(link.getFullUrl());
+		this.feedFriend(link);
+	}
+	
+
+	public void feedDevin() {
+		Link link = new Link(
+				this.webControl,
+				"徐寅斐的农场",
+				"http://mapps.renren.com/rr_farm/farm/action/wap,friendsFarmAction.php?fid=221142194&sid="+user.getSid());
+		this.feedFriend(link);
 	}
 }

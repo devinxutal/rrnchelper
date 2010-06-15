@@ -30,6 +30,7 @@ public class AutoStealServlet extends HttpServlet {
 		AutoWorkUtility utility = new AutoWorkUtility();
 		for (User user : users) {
 			if (user.getUsername().equals("devin")) {
+				System.out.println("start stealing for devin");
 				utility.setUser(user);
 				// utility.checkEvent();
 				utility.gotoFarm();

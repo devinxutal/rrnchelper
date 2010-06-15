@@ -30,6 +30,8 @@ public class User {
 	@Persistent
 	public String farmAddress;
 	@Persistent
+	public String sid;
+	@Persistent
 	public boolean autoWork;
 	@Persistent(mappedBy = "user")
 	private List<Log> logs;
@@ -121,5 +123,14 @@ public class User {
 	public void setEvents(List<Event> events) {
 		this.events = events;
 	}
+
+	public String getSid() {
+		return sid;
+	}
+
+	public void setSid(String sid) {
+		this.sid = sid;
+	}
+
 
 }
