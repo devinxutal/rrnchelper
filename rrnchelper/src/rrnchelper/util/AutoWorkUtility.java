@@ -258,12 +258,12 @@ public class AutoWorkUtility {
 				if (node.getChildren().size() >= 1
 						&& node.getChildren().elementAt(0) instanceof TextNode) {
 					String content = ((TextNode)node.getChildren().elementAt(0)).getText();
-					if (content.contains("菜粥成功")) {
+					if (content.contains("成功")) {
 
 						LoggingUtility.logging(user, LogType.Farm, "收获成功，具体消息： "+content);
 						
 					} else {
-						LoggingUtility.logging(user, LogType.Farm, "收获成功，具体消息： "+content);
+						LoggingUtility.logging(user, LogType.Farm, "收获失败，具体消息： "+content);
 					}
 				}
 			}
