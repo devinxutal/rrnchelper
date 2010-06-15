@@ -27,10 +27,12 @@
         	Boolean autoWork = user.isAutoWork();
    	%>
    
-		    <form action="/start.do?username=<%=username%>">
+		    <form action="/start.do">
+		      <input type="hidden" name="username" value="<%=username%>" />
 		      <button type="submit" <%=autoWork? "disabled":"" %>>开始收菜[<%=username %>]</button>
 		    </form>
-		    <form action="/stop.do?username=<%=username%>">
+		    <form action="/stop.do">
+		      <input type="hidden" name="username" value="<%=username%>" />
 		      <button type="submit" <%=autoWork? "":"disabled" %>>停止收菜[<%=username %>]</button>
 		    </form>
 		    <br>
