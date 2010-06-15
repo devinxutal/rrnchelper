@@ -53,6 +53,7 @@ public class UserDao {
 		}
 		filter = filter.replace(",", " && ");
 		try {
+			System.out.println("filter: " + filter);
 			Query query = getPersistenceManager().newQuery(User.class, filter);
 			List<User> users = (List<User>) query.execute();
 			users.size(); // 这个步骤用于解决延迟加载问题
@@ -61,20 +62,31 @@ public class UserDao {
 		}
 	}
 
-	public static User getUserByUsername(String username){
-		if( username == null || username.length()==0){
+	public static User getUserByUsername(String username) {
+		System.out.println("get user by username: " + username);
+		if (username == null || username.length() == 0) {
 			return null;
 		}
-		List<User> users = findByFilter("username = "+username);
-		if(users.size()>0){
-			return users.get(0);
-		}else{
+		List<User> users = findByFilter("username = " + username);
+		if (users.size() > 0) {
+			System.out.println(users.size() + " records found.");
+			System.out.println("get a user" + users.get(0).getUsername() + " "
+					+ users.get(0).getSid());
+			for(User u: users){
+				if(u.getUsername().equals(username)){
+					return u;
+				}
+			}
+			return null;
+		} else {
 			return null;
 		}
 	}
+
 	public static List<User> findAll() {
 		try {
-			Query query = getPersistenceManager().newQuery("select from " + User.class.getName());
+			Query query = getPersistenceManager().newQuery(
+					"select from " + User.class.getName());
 			List<User> users = (List<User>) query.execute();
 			users.size();
 			return users;
