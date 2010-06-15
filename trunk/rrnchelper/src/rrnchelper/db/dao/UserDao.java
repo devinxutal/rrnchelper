@@ -63,15 +63,15 @@ public class UserDao {
 	}
 
 	public static User getUserByUsername(String username) {
-		System.out.println("get user by username: " + username);
+		//System.out.println("get user by username: " + username);
 		if (username == null || username.length() == 0) {
 			return null;
 		}
 		List<User> users = findByFilter("username = " + username);
 		if (users.size() > 0) {
-			System.out.println(users.size() + " records found.");
-			System.out.println("get a user" + users.get(0).getUsername() + " "
-					+ users.get(0).getSid());
+			//System.out.println(users.size() + " records found.");
+			//System.out.println("get a user" + users.get(0).getUsername() + " "
+			//		+ users.get(0).getSid());
 			for(User u: users){
 				if(u.getUsername().equals(username)){
 					return u;

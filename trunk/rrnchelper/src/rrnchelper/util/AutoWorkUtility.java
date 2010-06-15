@@ -146,6 +146,7 @@ public class AutoWorkUtility {
 			
 			//start feed animals;
 			for(Link l : links){
+				l.setName(friendLink.getName());
 				feedByFeedLink(l);
 			}
 		}
@@ -154,7 +155,7 @@ public class AutoWorkUtility {
 	private void feedByFeedLink(Link feedLink){
 		feedLink.go();
 		String addr = CropUtility.constructFeedAddress(webControl);
-		System.out.println("Feed Address: "+ addr);
+		//System.out.println("Feed Address: "+ addr);
 		webControl.go(addr);
 		checkFeedResult(feedLink.getName());
 	}
@@ -440,7 +441,7 @@ public class AutoWorkUtility {
 				this.webControl,
 				"³ÂÀøµÄÅ©³¡",
 				"http://mapps.renren.com/rr_farm/farm/action/wap,friendsFarmAction.php?fid=47366&sid="+user.getSid());
-		System.out.println(link.getFullUrl());
+		//System.out.println(link.getFullUrl());
 		this.feedFriend(link);
 	}
 	
