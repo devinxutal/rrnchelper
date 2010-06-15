@@ -27,8 +27,8 @@ public class AutoWorkServlet extends HttpServlet {
 	private void process(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		User user = UserDao.getUserByUsername(request.getParameter("username"));
-		if (user != null) {
-			System.out.println("开始处理用户"+user.getUsername());
+		if (user != null && user.isAutoWork()) {
+			System.out.println("start processing user: "+user.getUsername());
 			AutoWorkUtility utility = new AutoWorkUtility();
 			utility.setUser(user);
 			// utility.checkEvent();
@@ -36,7 +36,7 @@ public class AutoWorkServlet extends HttpServlet {
 			utility.checkEveryType();
 			UserDao.saveOrUpdateUser(user);
 		}else{
-			System.out.println("没有找到用户"+user.getUsername());
+			System.out.println("cannot find user "+user.getUsername()+" user is not in autowork mode");
 		}
 		UserDao.closePersistenceManager();
 	}
