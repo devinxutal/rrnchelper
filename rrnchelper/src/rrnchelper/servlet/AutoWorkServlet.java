@@ -26,14 +26,17 @@ public class AutoWorkServlet extends HttpServlet {
 
 	private void process(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-		List<User> users = UserDao.findByFilter("autoWork = true");
-		AutoWorkUtility utility = new AutoWorkUtility();
-		for (User user : users) {
+		User user = UserDao.getUserByUsername(request.getParameter("username"));
+		if (user != null) {
+			System.out.println("开始处理用户"+user.getUsername());
+			AutoWorkUtility utility = new AutoWorkUtility();
 			utility.setUser(user);
-			//utility.checkEvent();
+			// utility.checkEvent();
 			utility.gotoFarm();
 			utility.checkEveryType();
 			UserDao.saveOrUpdateUser(user);
+		}else{
+			System.out.println("没有找到用户"+user.getUsername());
 		}
 		UserDao.closePersistenceManager();
 	}

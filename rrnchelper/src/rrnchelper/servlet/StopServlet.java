@@ -12,7 +12,9 @@ import rrnchelper.model.User;
 import rrnchelper.util.LogType;
 import rrnchelper.util.LoggingUtility;
 
+
 public class StopServlet extends HttpServlet {
+	
 
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -26,11 +28,13 @@ public class StopServlet extends HttpServlet {
 
 	private void process(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-		User user = UserDao.findAll().get(0);
-		user.setAutoWork(false);
-		LoggingUtility.logging(user, LogType.System, "自动收菜程序已经停止");
-		UserDao.saveOrUpdateUser(user);
-		response.sendRedirect("/");
+		User user = UserDao.getUserByUsername(request.getParameter("username"));
+		if (user != null) {
+			user.setAutoWork(false);
+			LoggingUtility.logging(user, LogType.System, user.getUsername()+":自动收菜程序已经停止");
+			UserDao.saveOrUpdateUser(user);
+			response.sendRedirect("/");
+		}
 		UserDao.closePersistenceManager();
 	}
 }

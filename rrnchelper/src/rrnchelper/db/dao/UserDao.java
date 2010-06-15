@@ -61,6 +61,17 @@ public class UserDao {
 		}
 	}
 
+	public static User getUserByUsername(String username){
+		if( username == null || username.length()==0){
+			return null;
+		}
+		List<User> users = findByFilter("username = "+username);
+		if(users.size()>0){
+			return users.get(0);
+		}else{
+			return null;
+		}
+	}
 	public static List<User> findAll() {
 		try {
 			Query query = getPersistenceManager().newQuery("select from " + User.class.getName());
