@@ -29,11 +29,13 @@ public class AutoStealServlet extends HttpServlet {
 		List<User> users = UserDao.findByFilter("autoWork = true");
 		AutoWorkUtility utility = new AutoWorkUtility();
 		for (User user : users) {
-			utility.setUser(user);
-			//utility.checkEvent();
-			utility.gotoFarm();
-			utility.stealZYP();
-			UserDao.saveOrUpdateUser(user);
+			if (user.getUsername().equals("devin")) {
+				utility.setUser(user);
+				// utility.checkEvent();
+				utility.gotoFarm();
+				utility.stealZYP();
+				UserDao.saveOrUpdateUser(user);
+			}
 		}
 		UserDao.closePersistenceManager();
 	}
