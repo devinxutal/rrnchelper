@@ -26,7 +26,7 @@
         	Boolean autoWork = user.isAutoWork();
         	String addr = user.getFarmAddress();
         	String formAction = autoWork?"/stop.do":"/start.do";
-        	String actionStr =  autoWork?"Æô¶¯":"Í£Ö¹";
+        	String actionStr =  autoWork?"Í£Ö¹":"Æô¶¯";
    	%>
    		<div class="section_title"><%=username%></div>
    		<div class="section">
