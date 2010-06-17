@@ -14,11 +14,10 @@
 <html>
   <head>
     <title>人人农场自动收菜程序</title>
+  	<link type="text/css" href="/css/main.css" rel="stylesheet">
   </head>
 
-  <body>
-  
-  
+  <body>  
   	<%
         List<User> users = UserDao.findAll();
         for(int i = 0; i< users.size(); i++){
@@ -26,19 +25,19 @@
         	String username = user.getUsername();
         	Boolean autoWork = user.isAutoWork();
         	String addr = user.getFarmAddress();
+        	String formAction = autoWork?"/stop.do":"/start.do";
+        	String actionStr =  autoWork?"启动":"停止";
    	%>
-   			<a href="<%=addr%>" > Go to <%=username%>'s farm</a>
-		    <form action="/start.do">
+   		<div class="section_title"><%=username%></div>
+   		<div class="section">
+		    <form action="<%=formAction%>">
 		      <input type="hidden" name="username" value="<%=username%>" />
-		      <button type="submit" <%=autoWork? "disabled":"" %>>开始收菜[<%=username %>]</button>
+		      <button class="button" type="submit"><%=actionStr%></button>
 		    </form>
-		    <form action="/stop.do">
-		      <input type="hidden" name="username" value="<%=username%>" />
-		      <button type="submit" <%=autoWork? "":"disabled" %>>停止收菜[<%=username %>]</button>
-		    </form>
-		    <br>
-		    <br>
-		    <br>
+		    <a class="navlink" href="<%=addr%>" >去农场看看吧</a>
+		    <a class="navlink" href="<%=addr%>" >查看偷菜记录</a>
+		    <a class="navlink" href="<%=addr%>" >查看喂食记录</a>
+		</div>
 	<%
 		}
 	%>

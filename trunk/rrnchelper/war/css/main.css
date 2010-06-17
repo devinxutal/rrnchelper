@@ -1,0 +1,35 @@
+body{
+	font-family: Arial,sans-serif;
+}
+
+a{
+	text-decoration:none;
+	color: #AA9922;
+}
+.section_title{
+	display:block;
+	color:white;
+	font-weight:bold;
+	padding:3px 10px 3px 10px;
+	margin:10px 10px 0px 10px;
+	border:1px solid #EEBB22;
+	background:none repeat scroll 0 0 #EEBB22;
+}
+.section{
+	display:block;
+	padding:10px;
+	margin:0px 10px 10px 10px;
+	border:1px solid #EEBB22;
+	background:none repeat scroll 0 0 #FFF8CC;
+}
+
+.button{
+	width: 150px;
+	text-align:center;
+}
+
+.navlink{
+	padding: 5px 0px 5px 0px;
+	margin: 5px 0px 5px 0px;
+	display:block;
+}
