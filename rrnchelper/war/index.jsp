@@ -25,8 +25,9 @@
         	User user = users.get(i);
         	String username = user.getUsername();
         	Boolean autoWork = user.isAutoWork();
+        	String addr = user.getFarmAddress();
    	%>
-   
+   			<a href="<%=addr%>" > Go to <%=username%>'s farm</a>
 		    <form action="/start.do">
 		      <input type="hidden" name="username" value="<%=username%>" />
 		      <button type="submit" <%=autoWork? "disabled":"" %>>¿ªÊ¼ÊÕ²Ë[<%=username %>]</button>

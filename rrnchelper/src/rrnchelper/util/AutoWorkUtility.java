@@ -177,8 +177,8 @@ public class AutoWorkUtility {
 								+ content);
 						
 					} else {
-						LoggingUtility.logging(user, LogType.Feed,"在" + location + "喂食或添加原料失败，具体消息： "
-								+ content);
+						//LoggingUtility.logging(user, LogType.Feed,"在" + location + "喂食或添加原料失败，具体消息： "
+						//		+ content);
 						
 					}
 				}

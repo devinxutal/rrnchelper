@@ -29,7 +29,7 @@ public class AutoStealServlet extends HttpServlet {
 		List<User> users = UserDao.findByFilter("autoWork = true");
 		AutoWorkUtility utility = new AutoWorkUtility();
 		for (User user : users) {
-			if (user.getUsername().equals("devin")) {
+			if (user.getUsername().equals("devin") && user.isAutoWork()) {
 				System.out.println("start stealing for devin");
 				utility.setUser(user);
 				// utility.checkEvent();
