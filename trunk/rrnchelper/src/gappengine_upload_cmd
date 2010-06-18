@@ -1,3 +1,15 @@
+dorm:
+
 D:
 cd D:\Tools\appengine-java-sdk-1.3.3.1\bin\
 appcfg.cmd --insecure update ..\..\workspace-google-app-engine\rrnchelper\war
+
+
+
+
+lab:
+
+D:
+cd D:\Tools\appengine-java-sdk-1.3.4\bin\
+appcfg.cmd --insecure update ..\..\workspace-appengine\rrnchelper\war
+

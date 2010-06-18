@@ -26,6 +26,10 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
     <servlet-class>rrnchelper.servlet.AutoFeedServlet</servlet-class>
   </servlet>
   <servlet>
+    <servlet-name>ViewLogServlet</servlet-name>
+    <servlet-class>rrnchelper.servlet.ViewLogServlet</servlet-class>
+  </servlet>
+  <servlet>
     <servlet-name>RegisterServlet</servlet-name>
     <servlet-class>rrnchelper.servlet.RegisterServlet</servlet-class>
   </servlet>
@@ -55,6 +59,10 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
   <servlet-mapping>
     <servlet-name>AutoFeedServlet</servlet-name>
     <url-pattern>/autofeed.do</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>ViewLogServlet</servlet-name>
+    <url-pattern>/viewlog.do</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>RegisterServlet</servlet-name>
