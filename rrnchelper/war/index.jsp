@@ -34,9 +34,17 @@
 		      <input type="hidden" name="username" value="<%=username%>" />
 		      <button class="button" type="submit"><%=actionStr%></button>
 		    </form>
-		    <a class="navlink" href="<%=addr%>" >去农场看看吧</a>
-		    <a class="navlink" href="<%=addr%>" >查看偷菜记录</a>
-		    <a class="navlink" href="<%=addr%>" >查看喂食记录</a>
+		    <ul>
+		    	<li>
+		    		<a class="navlink" href="<%=addr%>" >去农场看看吧</a>
+		    	</li>
+		    	<li>
+		    		<a class="navlink" href="viewlog.do?username=<%=username%>&logtype=Steal" >查看偷菜记录</a>
+		    	</li>
+		    	<li>
+		    		<a class="navlink" href="viewlog.do?username=<%=username%>&logtype=Feed" >查看喂食记录</a>
+		    	</li>
+		    </ul>
 		</div>
 	<%
 		}
