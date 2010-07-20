@@ -454,4 +454,18 @@ public class AutoWorkUtility {
 				"http://mapps.renren.com/rr_farm/farm/action/wap,friendsFarmAction.php?fid=221142194&sid="+user.getSid());
 		this.feedFriend(link);
 	}
+	public void feedSuning() {
+		Link link = new Link(
+				this.webControl,
+				"魏苏宁的农场",
+				"http://mapps.renren.com/rr_farm/farm/action/wap,friendsFarmAction.php?fid=233397945&sid="+user.getSid());
+		this.feedFriend(link);
+	}
+	public void feedChenyin() {
+		Link link = new Link(
+				this.webControl,
+				"陈寅的农场",
+				"http://mapps.renren.com/rr_farm/farm/action/wap,friendsFarmAction.php?fid=328063627&sid="+user.getSid());
+		this.feedFriend(link);
+	}
 }
