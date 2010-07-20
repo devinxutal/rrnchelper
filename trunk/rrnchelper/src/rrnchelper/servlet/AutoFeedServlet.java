@@ -32,8 +32,16 @@ public class AutoFeedServlet extends HttpServlet {
 			utility.setUser(user);
 			// utility.checkEvent();
 			utility.gotoFarm();
-			utility.feedDevin();
-			utility.feedComicLee();
+			if(user.getUsername().equals("suning")){
+				utility.feedDevin();
+				utility.feedChenyin();
+			}else if(user.getUsername().equals("rrnchelper")){
+				utility.feedDevin();
+				utility.feedComicLee();
+				utility.feedSuning();
+			}else if(user.getUsername().equals("yinfei")){
+				utility.feedDevin();
+			}
 			UserDao.saveOrUpdateUser(user);
 		}else{
 			System.out.println("cannot find user "+user.getUsername()+" user is not in autowork mode");
