@@ -6,6 +6,7 @@ import rrnchelper.model.User;
 public class LoggingUtility {
 	public static void logging(User user, LogType type, String content) {
 		Log log = new Log(type.toString(), content);
+		user.getLogs().clear();
 		//user.getLogs().add(log);
 		System.out.println("["+log.getTime() + "] "+log.getContent());
 	}
