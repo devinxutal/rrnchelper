@@ -31,6 +31,18 @@
 		<timezone>Asia/Shanghai</timezone>
 	</cron>	
 	<cron>
+		<url>/autowork.do?username=yinfei</url>
+		<description>Repopulate the cache every 2 minutes</description>
+		<schedule>every 2 minutes</schedule>
+		<timezone>Asia/Shanghai</timezone>
+	</cron>
+	<cron>
+		<url>/autofeed.do?username=yinfei</url>
+		<description>Repopulate the cache every 5 minutes</description>
+		<schedule>every 5 minutes</schedule>
+		<timezone>Asia/Shanghai</timezone>
+	</cron>	
+	<cron>
 		<url>/autosteal.do</url>
 		<description>Repopulate the cache every 5 minutes</description>
 		<schedule>every 5 minutes</schedule>
